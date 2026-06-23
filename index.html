@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/razvan/Downloads/index_9.html -->
+<!-- saved from url=(0047)file:///C:/Users/razvan/Downloads/index_10.html -->
 <html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -367,7 +367,7 @@ let rotY=0.5,rotX=0.15,tRY=0.5,tRX=0.15,dist=5,tD=5;
 let autoR=true,drag=false,sx=0,sy=0,px=0,py=0;
 
 c3.addEventListener('mousedown',e=>{drag=true;sx=e.clientX;sy=e.clientY;px=e.clientX;py=e.clientY;autoR=false;});
-window.addEventListener('mousemove',e=>{if(!drag)return;tRY-=(e.clientX-px)*0.012;tRX-=(e.clientY-py)*0.006;tRX=Math.max(-0.5,Math.min(0.6,tRX));px=e.clientX;py=e.clientY;});
+window.addEventListener('mousemove',e=>{if(!drag)return;tRY+=(e.clientX-px)*0.012;tRX-=(e.clientY-py)*0.006;tRX=Math.max(-0.5,Math.min(0.6,tRX));px=e.clientX;py=e.clientY;});
 window.addEventListener('mouseup',e=>{if(!drag)return;drag=false;if(Math.abs(e.clientX-sx)<6&&Math.abs(e.clientY-sy)<6)doClick(e.clientX,e.clientY);});
 c3.addEventListener('wheel',e=>{tD=Math.max(1,Math.min(10,tD+e.deltaY*0.004));e.preventDefault();},{passive:false});
 let tx0=0,tsx=0;
