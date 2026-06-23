@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/razvan/Downloads/index_8.html -->
-<html lang="ro"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Razvan bit — Configurator</title>
 <style>
@@ -116,11 +117,11 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
     <div style="font-size:10px;color:var(--muted)">Made to Order</div>
   </header>
   <div id="viewer">
-    <canvas id="c3d" width="1435" height="850" style="width: 1148px; height: 680px;"></canvas>
+    <canvas id="c3d"></canvas>
     <div id="loadingScreen">
       <div class="ld-logo">Razvan bit</div>
-      <div class="ld-bar-wrap"><div class="ld-bar" id="ldBar" style="width: 10%;"></div></div>
-      <div class="ld-txt" id="ldTxt">Eroare: Failed to fetch</div>
+      <div class="ld-bar-wrap"><div class="ld-bar" id="ldBar"></div></div>
+      <div class="ld-txt" id="ldTxt">Se încarcă modelul...</div>
     </div>
     <div class="part-label" id="partLabel" style="opacity:0"></div>
     <div class="zoom-btns">
@@ -142,27 +143,20 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
         <div class="p-title">Creează <em>perechea ta</em></div>
         <div class="p-sub">Fiecare detaliu, ales de tine · Confecționat manual</div>
       </div>
-      <div><div class="sec-lbl">Culoare</div><div class="col-row" id="colorRow"><div class="cdot on" title="Natural" style="background: rgb(196, 168, 130);"></div><div class="cdot" title="Crem" style="background: rgb(237, 227, 204);"></div><div class="cdot" title="Negru" style="background: rgb(17, 17, 17);"></div><div class="cdot" title="Bordeaux" style="background: rgb(92, 26, 40);"></div><div class="cdot" title="Coniac" style="background: rgb(122, 59, 16);"></div><div class="cdot" title="Navy" style="background: rgb(26, 37, 80);"></div><div class="cdot" title="Verde" style="background: rgb(30, 61, 30);"></div><div class="cdot" title="Auriu" style="background: rgb(184, 146, 42);"></div><div class="cdot" title="Gri" style="background: rgb(90, 90, 90);"></div><div class="cdot" title="Alb" style="background: rgb(240, 235, 224);"></div></div></div>
-      <div><div class="sec-lbl">Talpă</div><div class="sole-grid" id="soleGrid"><button class="sole-c on"><div class="sole-icon">⬜</div><span class="sole-nm">Alba</span><span class="sole-ds">Sport</span></button><button class="sole-c"><div class="sole-icon">⬛</div><span class="sole-nm">Neagra</span><span class="sole-ds">Elegant</span></button><button class="sole-c"><div class="sole-icon">🟫</div><span class="sole-nm">Bej</span><span class="sole-ds">Natural</span></button><button class="sole-c"><div class="sole-icon">✦</div><span class="sole-nm">Custom</span><span class="sole-ds">La cerere</span><div class="sole-ex">+150 RON</div></button></div></div>
-      <div><div class="sec-lbl">Șireturi</div><div class="lace-row" id="laceRow"><div class="ldw on"><div class="ld" style="background: rgb(240, 235, 224);"></div><div class="ll">Alb</div></div><div class="ldw"><div class="ld" style="background: rgb(17, 17, 17);"></div><div class="ll">Negru</div></div><div class="ldw"><div class="ld" style="background: rgb(212, 201, 168);"></div><div class="ll">Crem</div></div><div class="ldw"><div class="ld" style="background: rgb(200, 169, 110);"></div><div class="ll">Auriu</div></div><div class="ldw"><div class="ld" style="background: rgb(139, 26, 26);"></div><div class="ll">Rosu</div></div><div class="ldw"><div class="ld" style="background: rgb(26, 37, 80);"></div><div class="ll">Navy</div></div><div class="ldw"><div class="ld" style="background: rgb(136, 136, 136);"></div><div class="ll">Gri</div></div></div></div>
+      <div><div class="sec-lbl">Culoare</div><div class="col-row" id="colorRow"></div></div>
+      <div><div class="sec-lbl">Talpă</div><div class="sole-grid" id="soleGrid"></div></div>
+      <div><div class="sec-lbl">Șireturi</div><div class="lace-row" id="laceRow"></div></div>
       <div>
         <div class="sec-lbl">Inițiale / Gravură</div>
-        <div class="init-box"><input type="text" id="initInp" maxlength="6" placeholder="RB" oninput="onInit(this.value)"><div class="init-hint">Max 6 caractere<br>Gravate pe pantof</div></div>
+        <div class="init-box"><input type="text" id="initInp" maxlength="6" placeholder="RB" oninput="onInit(this.value)"/><div class="init-hint">Max 6 caractere<br>Gravate pe pantof</div></div>
         <div class="pos-btns">
-          <button class="pos-btn on" onclick="setPos(this,&#39;heel&#39;)">Călcâi</button>
-          <button class="pos-btn" onclick="setPos(this,&#39;tongue&#39;)">Limbă</button>
-          <button class="pos-btn" onclick="setPos(this,&#39;insole&#39;)">Branț</button>
+          <button class="pos-btn on" onclick="setPos(this,'heel')">Călcâi</button>
+          <button class="pos-btn" onclick="setPos(this,'tongue')">Limbă</button>
+          <button class="pos-btn" onclick="setPos(this,'insole')">Branț</button>
         </div>
       </div>
-      <div><div class="sec-lbl">Mărime EU</div><div class="sz-grid" id="sizeGrid"><button class="sz na">38</button><button class="sz">39</button><button class="sz">40</button><button class="sz">41</button><button class="sz">42</button><button class="sz">43</button><button class="sz">44</button><button class="sz">45</button><button class="sz">46</button><button class="sz na">47</button></div></div>
-      <div class="summary" id="summaryBox">
-    <div class="sr"><span>Culoare</span><span>Natural</span></div>
-    <div class="sr"><span>Șireturi</span><span>Alb</span></div>
-    <div class="sr"><span>Talpă</span><span>Alba</span></div>
-    
-    <div class="sr"><span>Mărime</span><span>—</span></div>
-    <div class="sdiv"></div>
-    <div class="stotal"><span class="stlbl">Total</span><span class="sprice">890<small>RON</small></span></div></div>
+      <div><div class="sec-lbl">Mărime EU</div><div class="sz-grid" id="sizeGrid"></div></div>
+      <div class="summary" id="summaryBox"></div>
       <div class="cta-wrap">
         <button class="cta" onclick="addToCart()">Adaugă în coș</button>
         <button class="cta-g" onclick="shareConf()">Salvează configurația</button>
@@ -173,8 +167,8 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
 </div>
 <div id="toast"></div>
 
-<script src="./index_files/three.min.js.download"></script>
-<script src="./index_files/GLTFLoader.js.download"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 // GLTFLoader inline (r128)
 
@@ -499,6 +493,5 @@ function shareConf(){try{navigator.clipboard.writeText(location.href).then(()=>t
 onResize();buildColors();buildLaces();buildSoles();buildSizes();updSum();animate();
 loadShoe();
 </script>
-
-
-</body></html>
+</body>
+</html>
