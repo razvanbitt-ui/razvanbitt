@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -365,7 +366,7 @@ window.addEventListener('mouseup',e=>{if(!drag)return;drag=false;if(Math.abs(e.c
 c3.addEventListener('wheel',e=>{tD=Math.max(1,Math.min(10,tD+e.deltaY*0.004));e.preventDefault();},{passive:false});
 let tx0=0,tsx=0;
 c3.addEventListener('touchstart',e=>{drag=true;tsx=e.touches[0].clientX;tx0=e.touches[0].clientX;autoR=false;},{passive:true});
-c3.addEventListener('touchmove',e=>{if(!drag)return;tRY+=(e.touches[0].clientX-tx0)*0.014;tx0=e.touches[0].clientX;},{passive:true});
+c3.addEventListener('touchmove',e=>{if(!drag)return;tRY-=(e.touches[0].clientX-tx0)*0.014;tx0=e.touches[0].clientX;},{passive:true});
 c3.addEventListener('touchend',e=>{drag=false;if(e.changedTouches.length&&Math.abs(e.changedTouches[0].clientX-tsx)<8)doClick(e.changedTouches[0].clientX,e.changedTouches[0].clientY);});
 
 // Hover
