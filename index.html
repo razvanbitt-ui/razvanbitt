@@ -272,7 +272,7 @@ function loadShoe(){
   const loader=new THREE.GLTFLoader();
   document.getElementById('ldTxt').textContent='Se încarcă modelul...';
   document.getElementById('ldBar').style.width='10%';
-  fetch('shoe2.glb')
+  fetch('Test_3.glb')
     .then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
       document.getElementById('ldBar').style.width='50%';
@@ -301,7 +301,7 @@ function loadShoe(){
         const size=new THREE.Vector3();
         box.getSize(size);
         const maxDim=Math.max(size.x,size.y,size.z);
-        const scale=7.5/maxDim;
+        const scale=3.2/maxDim;
         shoeModel.scale.setScalar(scale);
         shoeModel.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
         const box2=new THREE.Box3().setFromObject(shoeModel);
