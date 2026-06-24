@@ -380,7 +380,6 @@ c3.addEventListener('mousedown',e=>{drag=true;sx=e.clientX;sy=e.clientY;px=e.cli
 window.addEventListener('mousemove',e=>{if(!drag)return;tRY-=(e.clientX-px)*0.012;tRX+=(e.clientY-py)*0.006;tRX=Math.max(-0.5,Math.min(0.6,tRX));px=e.clientX;py=e.clientY;});
 window.addEventListener('mouseup',e=>{if(!drag)return;drag=false;if(Math.abs(e.clientX-sx)<6&&Math.abs(e.clientY-sy)<6)doClick(e.clientX,e.clientY);});
 c3.addEventListener('wheel',e=>{tD=Math.max(1,Math.min(10,tD+e.deltaY*0.004));e.preventDefault();},{passive:false});
-let tx0=0,tsx=0;
 let tx0=0,ty0=0,tsx=0,tsy=0,tpinch0=0;
 c3.addEventListener('touchstart',e=>{
   if(e.touches.length===1){
