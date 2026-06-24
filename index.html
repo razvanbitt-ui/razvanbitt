@@ -395,6 +395,7 @@ c3.addEventListener('touchstart',e=>{
   }
 },{passive:true});
 c3.addEventListener('touchmove',e=>{
+  if(drag) e.preventDefault();
   if(e.touches.length===1&&drag){
     tRY-=(e.touches[0].clientX-tx0)*0.012;
     tRX+=(e.touches[0].clientY-ty0)*0.006;
@@ -407,7 +408,7 @@ c3.addEventListener('touchmove',e=>{
     if(tpinch0>0) tD=Math.max(1,Math.min(10,tD-(dist2-tpinch0)*0.02));
     tpinch0=dist2;
   }
-},{passive:true});
+},{passive:false});
 c3.addEventListener('touchend',e=>{
   if(e.touches.length===0){
     drag=false;
