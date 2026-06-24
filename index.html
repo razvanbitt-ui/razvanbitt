@@ -309,7 +309,7 @@ function loadShoe(){
         scene.add(shoeModel);
         const scaledSize=size.clone().multiplyScalar(scale);
         const maxS=Math.max(scaledSize.x,scaledSize.y,scaledSize.z);
-        tD=maxS*1.2;dist=tD;
+        tD=maxS*(window.innerWidth<860?1.8:1.2);dist=tD;
         applyColors();
         hideSkeleton();
         hideLoading();
