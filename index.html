@@ -301,7 +301,7 @@ function loadShoe(){
         const size=new THREE.Vector3();
         box.getSize(size);
         const maxDim=Math.max(size.x,size.y,size.z);
-        const scale=3.2/maxDim;
+        const scale=4.5/maxDim;
         shoeModel.scale.setScalar(scale);
         shoeModel.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
         const box2=new THREE.Box3().setFromObject(shoeModel);
