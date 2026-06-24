@@ -1,0 +1,52 @@
+const MODELS = [
+  {
+    id: 'shoe2',
+    name: 'Model Classic',
+    subtitle: 'Sneaker handmade',
+    price: 890,
+    glb: 'shoe2.glb',
+    img: 'img/shoe2.jpg',
+    colors: [
+      {id:'natural', hex:'#C4A882', lb:'Natural'},
+      {id:'cream',   hex:'#EDE3CC', lb:'Crem'},
+      {id:'black',   hex:'#111111', lb:'Negru'},
+      {id:'bordeaux',hex:'#5C1A28', lb:'Bordeaux'},
+      {id:'cognac',  hex:'#7A3B10', lb:'Coniac'},
+      {id:'navy',    hex:'#1A2550', lb:'Navy'},
+      {id:'forest',  hex:'#1E3D1E', lb:'Verde'},
+      {id:'gold',    hex:'#B8922A', lb:'Auriu'},
+      {id:'grey',    hex:'#5A5A5A', lb:'Gri'},
+      {id:'white',   hex:'#F0EBE0', lb:'Alb'},
+    ],
+    laces: [
+      {id:'white', hex:'#F0EBE0', lb:'Alb'},
+      {id:'black', hex:'#111111', lb:'Negru'},
+      {id:'cream', hex:'#D4C9A8', lb:'Crem'},
+      {id:'gold',  hex:'#C8A96E', lb:'Auriu'},
+      {id:'red',   hex:'#8B1A1A', lb:'Rosu'},
+      {id:'navy',  hex:'#1A2550', lb:'Navy'},
+      {id:'grey',  hex:'#888888', lb:'Gri'},
+    ],
+    soles: [
+      {id:'white', nm:'Alba',   ds:'Sport',   ic:'⬜', hex:'#E8E4DC', ex:0},
+      {id:'black', nm:'Neagra', ds:'Elegant', ic:'⬛', hex:'#1A1A1A', ex:0},
+    ],
+    sizes: [38,39,40,41,42,43,44,45,46,47],
+    sizesNA: [38,47],
+  },
+
+  // --- Adaugă modele noi mai jos, după același format ---
+  // {
+  //   id: 'loafer1',
+  //   name: 'Model Loafer',
+  //   subtitle: 'Loafer handmade',
+  //   price: 950,
+  //   glb: 'loafer1.glb',
+  //   img: 'img/loafer1.jpg',
+  //   colors: [ ... ],
+  //   laces: [],
+  //   soles: [ ... ],
+  //   sizes: [39,40,41,42,43,44,45],
+  //   sizesNA: [],
+  // },
+];

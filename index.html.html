@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Razvan bit — Colecție</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0A0806;--panel:#161410;--card:#1D1A16;
+  --border:#2C2720;--border2:#3A342C;
+  --gold:#C8A96E;--gold2:#E2C98A;--gold-dim:#7A6540;
+  --text:#EDE8DF;--muted:#8C8070;--muted2:#5A5248;
+}
+html,body{min-height:100%;background:var(--ink);color:var(--text);font-family:'Inter',sans-serif;}
+
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:52px;
+  border-bottom:1px solid var(--border);background:var(--ink);
+  position:sticky;top:0;z-index:50;
+}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;letter-spacing:.1em;color:var(--gold)}
+.back-link{font-size:10px;color:var(--muted);letter-spacing:.05em;text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:3px;transition:color .15s;}
+.back-link:hover{color:var(--gold)}
+
+.hero{text-align:center;padding:64px 24px 48px;}
+.hero-eyebrow{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:14px;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);font-weight:300;line-height:1.15;color:var(--text);}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:11px;color:var(--muted);margin-top:14px;letter-spacing:.06em;line-height:1.7;}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:24px;
+  padding:0 32px 80px;
+  max-width:1280px;
+  margin:0 auto;
+}
+
+.model-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .2s, transform .2s;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+.model-card:hover{border-color:var(--gold-dim);transform:translateY(-3px);}
+
+.card-img{
+  width:100%;aspect-ratio:4/3;
+  background:var(--panel);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.card-img .placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  color:var(--muted2);
+}
+.placeholder-icon{font-size:36px;opacity:.4;}
+.placeholder-txt{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);}
+
+.card-body{padding:16px 18px 20px;}
+.card-label{font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--text);line-height:1.2;}
+.card-sub{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:.04em;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.card-price{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold);}
+.card-price small{font-size:10px;font-weight:400;margin-left:2px;}
+.card-cta{
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);background:var(--gold);
+  border:none;padding:7px 14px;border-radius:3px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:600;
+  transition:background .15s;
+}
+.card-cta:hover{background:var(--gold2);}
+
+.color-dots{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.cdot-sm{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.1);}
+
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:9px;color:var(--muted2);letter-spacing:.08em;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Razvan bit</div>
+  <a href="https://razvan-bit.myshopify.com" class="back-link">← Magazin</a>
+  <div style="font-size:10px;color:var(--muted);letter-spacing:.05em">Made to Order</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Colecție handmade</div>
+  <h1 class="hero-title">Alege <em>modelul tău</em></h1>
+  <p class="hero-sub">Fiecare pereche confecționată manual · Personalizare completă · Timp execuție 14–21 zile</p>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<footer>Razvan bit · Pantofi handmade · Transport gratuit peste 500 RON</footer>
+
+<script src="models.js"></script>
+<script>
+const grid = document.getElementById('grid');
+
+MODELS.forEach(model => {
+  const hasImg = model.img && model.img !== '';
+
+  const card = document.createElement('a');
+  card.className = 'model-card';
+  card.href = 'configurator.html?model=' + model.id;
+
+  const colorDots = model.colors.slice(0, 8).map(c =>
+    `<div class="cdot-sm" style="background:${c.hex}" title="${c.lb}"></div>`
+  ).join('');
+
+  card.innerHTML = `
+    <div class="card-img">
+      ${hasImg
+        ? `<img src="${model.img}" alt="${model.name}" loading="lazy">`
+        : `<div class="placeholder">
+             <div class="placeholder-icon">👟</div>
+             <div class="placeholder-txt">Imagine în curând</div>
+           </div>`
+      }
+    </div>
+    <div class="card-body">
+      <div class="card-label">Handmade · Personalizabil</div>
+      <div class="card-name">${model.name}</div>
+      <div class="card-sub">${model.subtitle}</div>
+      <div class="color-dots">${colorDots}</div>
+      <div class="card-footer">
+        <div class="card-price">${model.price}<small>RON</small></div>
+        <button class="card-cta">Configurează</button>
+      </div>
+    </div>
+  `;
+
+  grid.appendChild(card);
+});
+</script>
+
+</body>
+</html>
