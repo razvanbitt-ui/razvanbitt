@@ -35,8 +35,6 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
 .pop-zone{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
 .pop-x{background:none;border:none;color:var(--muted2);font-size:14px;cursor:pointer;line-height:1;padding:0}
 .pop-x:hover{color:var(--text)}
-.pop-stitle{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);margin-bottom:7px;margin-top:9px}
-.pop-stitle:first-of-type{margin-top:0}
 .dot-row{display:flex;flex-wrap:wrap;gap:6px}
 .pdot{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;outline:2px solid transparent;outline-offset:2px;transition:transform .12s,outline-color .12s;flex-shrink:0}
 .pdot:hover{transform:scale(1.14)}
@@ -105,6 +103,18 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
 .cta-g:hover{color:var(--text);border-color:var(--muted2)}
 #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--gold);color:var(--text);padding:9px 20px;border-radius:3px;font-size:12px;opacity:0;transition:all .24s;pointer-events:none;z-index:999;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:center;justify-content:center;}
+.modal-box{background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:28px;width:340px;max-width:90vw;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--gold);margin-bottom:6px;}
+.modal-sub{font-size:10px;color:var(--muted);margin-bottom:20px;}
+.modal-field{margin-bottom:12px;}
+.modal-field label{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;}
+.modal-field input{width:100%;padding:9px 12px;background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;outline:none;}
+.modal-field input:focus{border-color:var(--gold-dim);}
+.modal-btns{display:flex;gap:8px;margin-top:4px;}
+.modal-send{flex:1;padding:11px;background:var(--gold);color:var(--ink);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
+.modal-send:hover{background:var(--gold2);}
+.modal-cancel{padding:11px 14px;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:10px;border:1px solid var(--border);cursor:pointer;border-radius:3px;}
 @media(max-width:860px){#app{grid-template-columns:1fr;grid-template-rows:52px 44vh 1fr;overflow:auto}html,body{overflow:auto}}
 </style>
 </head>
@@ -112,8 +122,8 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
 <div id="app">
   <header>
     <div class="logo">Razvan bit</div>
-    <a href="gallery.html" style="font-size:10px;color:var(--muted);letter-spacing:.05em;text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:3px;transition:color .15s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">← Înapoi la colecție</a>
-    <div style="font-size:10px;color:var(--muted);letter-spacing:.05em">Click pe pantof · Drag rotire · Scroll zoom</div>
+    <a href="gallery.html" style="font-size:10px;color:var(--muted);letter-spacing:.05em;text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:3px;" id="backBtn">← Înapoi la colecție</a>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.05em" id="hintTop">Click pe pantof · Drag rotire · Scroll zoom</div>
     <div style="font-size:10px;color:var(--muted)">Made to Order</div>
   </header>
   <div id="viewer">
@@ -128,7 +138,7 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
       <button class="zbtn" onclick="zI()">+</button>
       <button class="zbtn" onclick="zO()">−</button>
     </div>
-    <div class="hint-bar">Click pe pantof pentru a personaliza</div>
+    <div class="hint-bar" id="hintBar">Click pe pantof pentru a personaliza</div>
   </div>
   <div id="popup">
     <div class="pop-head">
@@ -141,12 +151,12 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
     <div class="p-inner">
       <div class="p-head">
         <div class="p-title" id="modelTitle">Creează <em>perechea ta</em></div>
-        <div class="p-sub">Fiecare detaliu, ales de tine · Confecționat manual</div>
+        <div class="p-sub" id="modelSub">Fiecare detaliu, ales de tine · Confecționat manual</div>
       </div>
-      <div><div class="sec-lbl">Culoare</div><div class="col-row" id="colorRow"></div></div>
-      <div><div class="sec-lbl">Talpă</div><div class="sole-grid" id="soleGrid"></div></div>
-      <div><div class="sec-lbl">Șireturi</div><div class="lace-row" id="laceRow"></div></div>
-      <div>
+      <div id="secColor"><div class="sec-lbl">Culoare</div><div class="col-row" id="colorRow"></div></div>
+      <div id="secSole"><div class="sec-lbl">Talpă</div><div class="sole-grid" id="soleGrid"></div></div>
+      <div id="secLaces"><div class="sec-lbl">Șireturi</div><div class="lace-row" id="laceRow"></div></div>
+      <div id="secIni">
         <div class="sec-lbl">Inițiale / Gravură</div>
         <div class="init-box">
           <input type="text" id="initInp" maxlength="6" placeholder="RB" oninput="onInit(this.value)">
@@ -158,167 +168,127 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
           <button class="pos-btn" onclick="setPos(this,'insole')">Branț</button>
         </div>
       </div>
-      <div><div class="sec-lbl">Mărime EU</div><div class="sz-grid" id="sizeGrid"></div></div>
+      <div id="secSize"><div class="sec-lbl">Mărime EU</div><div class="sz-grid" id="sizeGrid"></div></div>
       <div class="summary" id="summaryBox"></div>
       <div class="cta-wrap">
-        <button class="cta" onclick="addToCart()">Adaugă în coș</button>
-        <button class="cta-g" onclick="shareConf()">Salvează configurația</button>
+        <button class="cta" id="ctaMain" onclick="addToCart()">Trimite configurația pe email</button>
+        <button class="cta-g" id="ctaSec" onclick="shareConf()">🔗 Copiază link configurație</button>
       </div>
-      <div style="font-size:9px;color:var(--muted2);text-align:center;line-height:1.7"><span id="deliveryEst">Se calculează...</span> · Transport gratuit peste 500 RON</div>
+      <div style="font-size:9px;color:var(--muted2);text-align:center;line-height:1.7"><span id="deliveryEst">Timp execuție 14–21 zile</span> · Transport gratuit peste 500 RON</div>
     </div>
   </div>
 </div>
 <div id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">function loadDelivery(){
-  const BIN_ID="6a3d95abf5f4af5e29311232";
-  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
-  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
-  .then(r=>r.json()).then(d=>{
-    const q=d.record.queue;
-    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
-  }).catch(()=>{
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție 14–21 zile";
-  });
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js">function loadDelivery(){
-  const BIN_ID="6a3d95abf5f4af5e29311232";
-  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
-  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
-  .then(r=>r.json()).then(d=>{
-    const q=d.record.queue;
-    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
-  }).catch(()=>{
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție 14–21 zile";
-  });
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js">function loadDelivery(){
-  const BIN_ID="6a3d95abf5f4af5e29311232";
-  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
-  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
-  .then(r=>r.json()).then(d=>{
-    const q=d.record.queue;
-    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
-  }).catch(()=>{
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție 14–21 zile";
-  });
-}
-</script>
-<script src="models.js">function loadDelivery(){
-  const BIN_ID="6a3d95abf5f4af5e29311232";
-  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
-  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
-  .then(r=>r.json()).then(d=>{
-    const q=d.record.queue;
-    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
-  }).catch(()=>{
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție 14–21 zile";
-  });
-}
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('Ffsln1L_JdnqqHsCe');</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script src="models.js"></script>
 <script>
 
-// --- Citeste modelul din URL (?model=shoe2) ---
 const urlParams = new URLSearchParams(window.location.search);
 const modelId = urlParams.get('model') || MODELS[0].id;
-const MODEL = MODELS.find(m => m.id === modelId) || MODELS[0];
+const MODEL = MODELS.find(m=>m.id===modelId)||MODELS[0];
+const VIEW_MODE = urlParams.get('view')==='1';
 
-const COLORS = MODEL.colors;
-const LACES  = MODEL.laces;
-const SOLES  = MODEL.soles;
-const SIZES  = MODEL.sizes;
-const NA     = MODEL.sizesNA;
-const BASE   = MODEL.price;
+const COLORS=MODEL.colors, LACES=MODEL.laces, SOLES=MODEL.soles, SIZES=MODEL.sizes, NA=MODEL.sizesNA, BASE=MODEL.price;
 
 document.getElementById('modelTitle').innerHTML = MODEL.name + ' — <em>perechea ta</em>';
 document.title = 'Razvan bit — ' + MODEL.name;
 
-const S = {col:COLORS[0], lc:LACES[0], sl:SOLES[0], ini:'', ipos:'heel', sz:null};
+const S={col:COLORS[0],lc:LACES[0],sl:SOLES[0],ini:'',ipos:'heel',sz:null};
 
-// --- THREE setup ---
-const c3 = document.getElementById('c3d');
-const renderer = new THREE.WebGLRenderer({canvas:c3, antialias:true, alpha:false});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.4;
-renderer.setClearColor(0x0A0806, 1);
+// Aplica config din URL
+function applyURLConfig(){
+  const cid=urlParams.get('color'), sid=urlParams.get('sole'), lid=urlParams.get('laces');
+  const sz=urlParams.get('size'), ini=urlParams.get('ini'), ipos=urlParams.get('ipos');
+  if(cid){const c=COLORS.find(x=>x.id===cid);if(c)S.col=c;}
+  if(sid){const s=SOLES.find(x=>x.id===sid);if(s)S.sl=s;}
+  if(lid){const l=LACES.find(x=>x.id===lid);if(l)S.lc=l;}
+  if(sz&&sz!=='') S.sz=parseInt(sz);
+  if(ini) S.ini=ini;
+  if(ipos) S.ipos=ipos;
+}
 
-const scene = new THREE.Scene();
-const cam = new THREE.PerspectiveCamera(38, 1, 0.01, 100);
+// Mod view-only
+function activateViewMode(){
+  ['secColor','secSole','secLaces','secIni','secSize'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display='none';
+  });
+  document.getElementById('hintBar').textContent='Drag rotire · Scroll zoom';
+  document.getElementById('hintTop').textContent='Mod vizualizare — doar rotire';
+  document.getElementById('modelSub').textContent='Configurația ta — doar vizualizare';
+  document.getElementById('ctaMain').textContent='← Configurează propria pereche';
+  document.getElementById('ctaMain').onclick=()=>{window.location.href='gallery.html';};
+  document.getElementById('ctaSec').textContent='🔗 Copiază link';
+  document.getElementById('ctaSec').onclick=()=>{
+    navigator.clipboard.writeText(location.href).then(()=>toast('Link copiat!'));
+  };
+}
 
-scene.add(new THREE.AmbientLight(0xfff4e0, 0.6));
-const kl = new THREE.DirectionalLight(0xfff8f0, 2.0);
-kl.position.set(3,5,4); kl.castShadow = true;
-kl.shadow.mapSize.set(2048,2048);
-scene.add(kl);
-const fl = new THREE.DirectionalLight(0xc8a96e, 0.5);
-fl.position.set(-3,2,-2); scene.add(fl);
-const rl = new THREE.DirectionalLight(0xffffff, 0.3);
-rl.position.set(0,0,-4); scene.add(rl);
+// Generare link cu configuratia
+function buildConfLink(){
+  const base=location.origin+location.pathname;
+  const p=new URLSearchParams({
+    model:modelId, color:S.col.id, sole:S.sl.id,
+    laces:S.lc.id, size:S.sz||'', ini:S.ini, ipos:S.ipos, view:'1'
+  });
+  return base+'?'+p.toString();
+}
 
-const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(10,10),
-  new THREE.ShadowMaterial({opacity:0.3})
-);
-ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
-scene.add(ground);
+// THREE setup
+const c3=document.getElementById('c3d');
+const renderer=new THREE.WebGLRenderer({canvas:c3,antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.4;
+renderer.setClearColor(0x0A0806,1);
 
-const RC = new THREE.Raycaster();
-const MV = new THREE.Vector2();
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(38,1,0.01,100);
 
-let shoeModel=null, upperMeshes=[], soleMeshes=[], laceMeshes=[], clickable=[];
+scene.add(new THREE.AmbientLight(0xfff4e0,0.6));
+const kl=new THREE.DirectionalLight(0xfff8f0,2.0);
+kl.position.set(3,5,4);kl.castShadow=true;kl.shadow.mapSize.set(2048,2048);scene.add(kl);
+scene.add(Object.assign(new THREE.DirectionalLight(0xc8a96e,0.5),{position:{x:-3,y:2,z:-2}}));
+scene.add(Object.assign(new THREE.DirectionalLight(0xffffff,0.3),{position:{x:0,y:0,z:-4}}));
+
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.ShadowMaterial({opacity:0.3}));
+ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+
+const RC=new THREE.Raycaster(),MV=new THREE.Vector2();
+let shoeModel=null,upperMeshes=[],soleMeshes=[],laceMeshes=[],clickable=[];
 
 function classifyMesh(name){
   const n=(name||'').toLowerCase();
   if(n.includes('sole'))return'sole';
-  if(n.includes('lace')||n.includes('laces'))return'laces';
-  if(n.includes('lining')||n.includes('inner'))return'lining';
-  if(n.includes('insole'))return'insole';
-  if(n.includes('eyestay'))return'eyestay';
-  if(n.includes('eyelet'))return'eyelet';
-  if(n.includes('tip')||n.includes('toecap'))return'tipvamp';
-  if(n.includes('tongue'))return'tongue';
-  if(n.includes('collar'))return'collar';
-  if(n.includes('quarter'))return'quarter';
-  if(n.includes('heel_tab')||n.includes('heeltab'))return'heeltab';
-  if(n.includes('heel_counter')||n.includes('heelcounter'))return'heelcounter';
-  if(n.includes('vamp'))return'vamp';
+  if(n.includes('lace'))return'laces';
+  if(n.includes('lining')||n.includes('inner'))return'upper';
+  if(n.includes('insole'))return'upper';
+  if(n.includes('tongue'))return'upper';
+  if(n.includes('collar'))return'upper';
+  if(n.includes('quarter'))return'upper';
+  if(n.includes('heel'))return'upper';
+  if(n.includes('vamp'))return'upper';
+  if(n.includes('toecap')||n.includes('tip'))return'upper';
   return'upper';
 }
 
 function loadShoe(){
-  const loader = new THREE.GLTFLoader();
-  const dracoLoader = new THREE.DRACOLoader();
-  dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
+  const loader=new THREE.GLTFLoader();
+  const dracoLoader=new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
   loader.setDRACOLoader(dracoLoader);
-
-  document.getElementById('ldTxt').textContent = 'Se încarcă modelul...';
-  document.getElementById('ldBar').style.width = '10%';
-
+  document.getElementById('ldTxt').textContent='Se încarcă modelul...';
+  document.getElementById('ldBar').style.width='10%';
   fetch(MODEL.glb)
-    .then(r=>{
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      document.getElementById('ldBar').style.width='50%';
-      document.getElementById('ldTxt').textContent='Se procesează...';
-      return r.arrayBuffer();
-    })
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);document.getElementById('ldBar').style.width='50%';return r.arrayBuffer();})
     .then(buffer=>{
       document.getElementById('ldBar').style.width='80%';
       loader.parse(buffer,'',gltf=>{
@@ -326,7 +296,7 @@ function loadShoe(){
         upperMeshes=[];soleMeshes=[];laceMeshes=[];clickable=[];
         shoeModel.traverse(obj=>{
           if(obj.isMesh){
-            obj.castShadow=true; obj.receiveShadow=true;
+            obj.castShadow=true;obj.receiveShadow=true;
             const zone=classifyMesh(obj.name);
             obj.userData.zone=zone;
             if(zone==='sole')soleMeshes.push(obj);
@@ -336,126 +306,96 @@ function loadShoe(){
           }
         });
         const box=new THREE.Box3().setFromObject(shoeModel);
-        const center=new THREE.Vector3();
-        box.getCenter(center);
-        const size=new THREE.Vector3();
-        box.getSize(size);
-        const maxDim=Math.max(size.x,size.y,size.z);
-        const scale=2.0/maxDim;
+        const center=new THREE.Vector3();box.getCenter(center);
+        const size=new THREE.Vector3();box.getSize(size);
+        const scale=2.0/Math.max(size.x,size.y,size.z);
         shoeModel.scale.setScalar(scale);
         shoeModel.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
         const box2=new THREE.Box3().setFromObject(shoeModel);
         ground.position.y=box2.min.y-0.01;
         scene.add(shoeModel);
-        const scaledSize=size.clone().multiplyScalar(scale);
-        const maxS=Math.max(scaledSize.x,scaledSize.y,scaledSize.z);
-        tD=maxS*2.8; dist=tD;
+        const maxS=Math.max(size.x,size.y,size.z)*scale;
+        tD=maxS*2.8;dist=tD;
         applyColors();
-        hideSkeleton();
-        hideLoading();
-      }, err=>{
-        document.getElementById('ldTxt').textContent='Eroare: '+err.message;
-      });
+        const ls=document.getElementById('loadingScreen');
+        ls.style.transition='opacity .5s';ls.style.opacity='0';
+        setTimeout(()=>ls.style.display='none',500);
+      },err=>{document.getElementById('ldTxt').textContent='Eroare: '+err.message;});
     })
-    .catch(err=>{
-      document.getElementById('ldTxt').textContent='Eroare: '+err.message;
-    });
-}
-
-function hideSkeleton(){
-  scene.traverse(o=>{
-    if(o.isSkinnedMesh)o.visible=false;
-    if(o.isBone)o.visible=false;
-  });
-}
-function hideLoading(){
-  const ls=document.getElementById('loadingScreen');
-  ls.style.transition='opacity .5s';
-  ls.style.opacity='0';
-  setTimeout(()=>ls.style.display='none',500);
+    .catch(err=>{document.getElementById('ldTxt').textContent='Eroare: '+err.message;});
 }
 
 function applyColors(){
   if(!shoeModel)return;
-  const mainCol=new THREE.Color(S.col.hex);
-  const soleCol=new THREE.Color(S.sl.hex);
-  const laceCol=new THREE.Color(S.lc.hex);
+  const mc=new THREE.Color(S.col.hex),sc=new THREE.Color(S.sl.hex),lc=new THREE.Color(S.lc.hex);
   function setColor(mesh,color){
     if(!mesh.material)return;
     const mats=Array.isArray(mesh.material)?mesh.material:[mesh.material];
     mats.forEach(mat=>{
-      if(!mat.userData.cloned){
-        const clone=mat.clone(); clone.userData.cloned=true;
+      if(!mat.userData.cloned){const clone=mat.clone();clone.userData.cloned=true;
         if(Array.isArray(mesh.material)){const idx=mesh.material.indexOf(mat);mesh.material[idx]=clone;}
-        else mesh.material=clone;
-        mat=clone;
-      }
-      mat.color.copy(color); mat.needsUpdate=true;
+        else mesh.material=clone;mat=clone;}
+      mat.color.copy(color);mat.needsUpdate=true;
     });
   }
-  upperMeshes.forEach(m=>setColor(m,mainCol));
-  soleMeshes.forEach(m=>setColor(m,soleCol));
-  laceMeshes.forEach(m=>setColor(m,laceCol));
+  upperMeshes.forEach(m=>setColor(m,mc));
+  soleMeshes.forEach(m=>setColor(m,sc));
+  laceMeshes.forEach(m=>setColor(m,lc));
 }
 
-// Orbit
 let rotY=0.5,rotX=0.15,tRY=0.5,tRX=0.15,dist=5,tD=5;
 let autoR=true,drag=false,sx=0,sy=0,px=0,py=0;
 c3.addEventListener('mousedown',e=>{drag=true;sx=e.clientX;sy=e.clientY;px=e.clientX;py=e.clientY;autoR=false;});
 window.addEventListener('mousemove',e=>{if(!drag)return;tRY-=(e.clientX-px)*0.012;tRX+=(e.clientY-py)*0.006;tRX=Math.max(-1.4,Math.min(1.4,tRX));px=e.clientX;py=e.clientY;});
 window.addEventListener('mouseup',e=>{if(!drag)return;drag=false;if(Math.abs(e.clientX-sx)<6&&Math.abs(e.clientY-sy)<6)doClick(e.clientX,e.clientY);});
 c3.addEventListener('wheel',e=>{tD=Math.max(1,Math.min(10,tD+e.deltaY*0.004));e.preventDefault();},{passive:false});
-let tx0=0,ty0=0,tsx=0,tsy=0,tpinch0=0;
+let tx0=0,ty0=0,tsx=0,tsy=0,tp0=0;
 c3.addEventListener('touchstart',e=>{
-  if(e.touches.length===1){drag=true;tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;autoR=false;}
-  else if(e.touches.length===2){drag=false;const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;tpinch0=Math.sqrt(dx*dx+dy*dy);}
+  if(e.touches.length===1){drag=true;tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;tx0=tsx;ty0=tsy;autoR=false;}
+  else if(e.touches.length===2){drag=false;const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;tp0=Math.sqrt(dx*dx+dy*dy);}
 },{passive:true});
 c3.addEventListener('touchmove',e=>{
   if(drag)e.preventDefault();
   if(e.touches.length===1&&drag){tRY-=(e.touches[0].clientX-tx0)*0.012;tRX+=(e.touches[0].clientY-ty0)*0.006;tRX=Math.max(-1.4,Math.min(1.4,tRX));tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;}
-  else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d2=Math.sqrt(dx*dx+dy*dy);if(tpinch0>0)tD=Math.max(1,Math.min(10,tD-(d2-tpinch0)*0.02));tpinch0=d2;}
+  else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d2=Math.sqrt(dx*dx+dy*dy);if(tp0>0)tD=Math.max(1,Math.min(10,tD-(d2-tp0)*0.02));tp0=d2;}
 },{passive:false});
 c3.addEventListener('touchend',e=>{
   if(e.touches.length===0){drag=false;if(e.changedTouches.length&&Math.abs(e.changedTouches[0].clientX-tsx)<8&&Math.abs(e.changedTouches[0].clientY-tsy)<8)doClick(e.changedTouches[0].clientX,e.changedTouches[0].clientY);}
 });
 
 c3.addEventListener('mousemove',e=>{
-  if(drag)return;
+  if(drag||VIEW_MODE)return;
   const p=rc(e.clientX,e.clientY);
   const lbl=document.getElementById('partLabel');
-  const nm={upper:'Culoare principală',sole:'Talpă',laces:'Șireturi',tongue:'Limbă',collar:'Guler',quarter:'Lateral',heel_counter:'Călcâi'};
-  if(p&&nm[p]){lbl.textContent='● '+nm[p];lbl.style.opacity='1';c3.style.cursor='pointer';}
+  if(p){lbl.textContent='● '+({upper:'Culoare',sole:'Talpă',laces:'Șireturi'}[p]||'');lbl.style.opacity='1';c3.style.cursor='pointer';}
   else{lbl.style.opacity='0';c3.style.cursor='crosshair';}
 });
 
 function rc(cx,cy){
   if(!clickable.length)return null;
   const rect=c3.getBoundingClientRect();
-  MV.x=((cx-rect.left)/rect.width)*2-1;
-  MV.y=-((cy-rect.top)/rect.height)*2+1;
+  MV.x=((cx-rect.left)/rect.width)*2-1;MV.y=-((cy-rect.top)/rect.height)*2+1;
   RC.setFromCamera(MV,cam);
   const hits=RC.intersectObjects(clickable,false);
   return hits.length?hits[0].object.userData.zone:null;
 }
 
 function doClick(cx,cy){
+  if(VIEW_MODE)return;
   const p=rc(cx,cy);
   if(!p){closePopup();return;}
   openPopup(cx,cy,p);
 }
 
 function openPopup(cx,cy,zone){
-  const popup=document.getElementById('popup');
-  const body=document.getElementById('popBody');
-  const zoneNames={upper:'Culoare principală',sole:'Talpă',laces:'Șireturi',tongue:'Limbă',collar:'Guler',quarter:'Lateral',heel_counter:'Călcâi',tipvamp:'Vârf'};
-  document.getElementById('popZone').textContent=zoneNames[zone]||'Personalizează';
+  const popup=document.getElementById('popup'),body=document.getElementById('popBody');
+  document.getElementById('popZone').textContent={upper:'Culoare',sole:'Talpă',laces:'Șireturi'}[zone]||'';
   body.innerHTML='';
-
   if(zone==='sole'){
     const sr=document.createElement('div');sr.className='sole-row';
     SOLES.forEach(sl=>{
       const o=document.createElement('div');o.className='psole'+(S.sl.id===sl.id?' on':'');
-      o.innerHTML=`<div class="psole-d" style="background:${sl.hex}">${sl.ic}</div><div class="psole-l">${sl.nm}${sl.ex?' +'+sl.ex:''}</div>`;
+      o.innerHTML=`<div class="psole-d" style="background:${sl.hex}">${sl.ic}</div><div class="psole-l">${sl.nm}</div>`;
       o.onclick=()=>{S.sl=sl;sr.querySelectorAll('.psole').forEach(x=>x.classList.remove('on'));o.classList.add('on');syncPanel();applyColors();updSum();};
       sr.appendChild(o);
     });body.appendChild(sr);
@@ -468,7 +408,6 @@ function openPopup(cx,cy,zone){
       lr.appendChild(d);
     });body.appendChild(lr);
   } else {
-    const t1=document.createElement('div');t1.className='pop-stitle';t1.textContent='Culoare';body.appendChild(t1);
     const cr=document.createElement('div');cr.className='dot-row';
     COLORS.forEach(col=>{
       const d=document.createElement('div');d.className='pdot'+(S.col.id===col.id?' on':'');
@@ -477,7 +416,6 @@ function openPopup(cx,cy,zone){
       cr.appendChild(d);
     });body.appendChild(cr);
   }
-
   const pw=230;let ppx=cx+12,ppy=cy-10;
   if(ppx+pw>window.innerWidth-8)ppx=cx-pw-8;
   if(ppy<8)ppy=8;if(ppy+260>window.innerHeight-8)ppy=window.innerHeight-270;
@@ -493,8 +431,7 @@ function zO(){tD=Math.min(10,tD+0.4);}
 function onResize(){
   const v=document.getElementById('viewer');
   renderer.setSize(v.clientWidth,v.clientHeight);
-  cam.aspect=v.clientWidth/v.clientHeight;
-  cam.updateProjectionMatrix();
+  cam.aspect=v.clientWidth/v.clientHeight;cam.updateProjectionMatrix();
 }
 window.addEventListener('resize',onResize);
 
@@ -505,8 +442,7 @@ function animate(){
   cam.position.x=dist*Math.cos(rotX)*Math.sin(rotY);
   cam.position.y=dist*Math.sin(rotX);
   cam.position.z=dist*Math.cos(rotX)*Math.cos(rotY);
-  cam.lookAt(0,0,0);
-  renderer.render(scene,cam);
+  cam.lookAt(0,0,0);renderer.render(scene,cam);
 }
 
 function buildColors(){
@@ -547,13 +483,11 @@ function buildSizes(){
     el.appendChild(b);
   });
 }
-
 function syncPanel(){
   document.querySelectorAll('.cdot').forEach((d,i)=>{if(COLORS[i])d.classList.toggle('on',COLORS[i].id===S.col.id);});
   document.querySelectorAll('.ldw').forEach((d,i)=>{if(LACES[i])d.classList.toggle('on',LACES[i].id===S.lc.id);});
   document.querySelectorAll('.sole-c').forEach((d,i)=>{if(SOLES[i])d.classList.toggle('on',SOLES[i].id===S.sl.id);});
 }
-
 function onInit(v){S.ini=v.toUpperCase().slice(0,6);updSum();}
 function setPos(btn,pos){document.querySelectorAll('.pos-btn').forEach(x=>x.classList.remove('on'));btn.classList.add('on');S.ipos=pos;}
 
@@ -569,27 +503,68 @@ function updSum(){
     <div class="stotal"><span class="stlbl">Total</span><span class="sprice">${tot}<small>RON</small></span></div>`;
 }
 
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
-function addToCart(){if(!S.sz){toast('Selectează mai întâi mărimea.');return;}toast('Adăugat în coș — EU '+S.sz+' · '+S.col.lb);}
-function shareConf(){try{navigator.clipboard.writeText(location.href).then(()=>toast('Link copiat!'));}catch{toast('Copiază URL-ul din bara.');}}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-onResize();buildColors();buildLaces();buildSoles();buildSizes();updSum();animate();
-loadShoe();
-loadDelivery();
-function loadDelivery(){
-  const BIN_ID="6a3d95abf5f4af5e29311232";
-  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
-  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
-  .then(r=>r.json()).then(d=>{
-    const q=d.record.queue;
-    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
-  }).catch(()=>{
-    const el=document.getElementById("deliveryEst");
-    if(el)el.textContent="Timp execuție 14–21 zile";
-  });
+// Email modal
+function addToCart(){
+  if(!VIEW_MODE && !S.sz){toast('Selectează mai întâi mărimea.');return;}
+  const existing=document.getElementById('emailModal');if(existing)existing.remove();
+  const modal=document.createElement('div');
+  modal.id='emailModal';modal.className='modal-overlay';
+  modal.innerHTML=`
+    <div class="modal-box">
+      <div class="modal-title">Trimite configurația</div>
+      <div class="modal-sub">Vei primi pe email un link cu pantoful exact cum l-ai ales — îl poți roti și verifica oricând.</div>
+      <div class="modal-field"><label>Numele tău</label><input id="emName" type="text" placeholder="ex: Andrei Popescu"></div>
+      <div class="modal-field"><label>Email-ul tău</label><input id="emEmail" type="email" placeholder="ex: andrei@gmail.com"></div>
+      <div class="modal-btns">
+        <button class="modal-send" onclick="sendConfEmail()">Trimite</button>
+        <button class="modal-cancel" onclick="document.getElementById('emailModal').remove()">Anulează</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
 }
+
+async function sendConfEmail(){
+  const name=document.getElementById('emName').value.trim();
+  const email=document.getElementById('emEmail').value.trim();
+  if(!email){toast('Introdu adresa de email.');return;}
+  const link=buildConfLink();
+  const tot=BASE+S.sl.ex+(S.ini?50:0);
+  toast('Se trimite...');
+  try {
+    await emailjs.send('service_l0wy3y9','qpepsy7',{
+      title: MODEL.name,
+      name: name||'Client',
+      email: email,
+      message: `Configurația ta Razvan bit:\n\nModel: ${MODEL.name}\nCuloare: ${S.col.lb}\nTalpă: ${S.sl.nm}\nȘireturi: ${S.lc.lb}\nInițiale: ${S.ini||'—'}\nMărime EU: ${S.sz?'EU '+S.sz:'—'}\nTotal: ${tot} RON\n\n👟 Vezi pantoful tău în 3D:\n${link}\n\n(Poți roti pantoful și verifica toate detaliile)\n\nTe vom contacta în curând pentru confirmare.\n\nCu drag,\nRazvan bit`
+    });
+    document.getElementById('emailModal').remove();
+    toast('✓ Email trimis! Verifică inbox-ul.');
+  } catch(e){
+    toast('Eroare: '+JSON.stringify(e));
+  }
+}
+
+function shareConf(){
+  const link=buildConfLink();
+  navigator.clipboard.writeText(link).then(()=>toast('Link copiat!')).catch(()=>toast('Copiază URL-ul din bara.'));
+}
+
+function loadDelivery(){
+  fetch('https://api.jsonbin.io/v3/b/6a3d95abf5f4af5e29311232/latest',
+    {headers:{'X-Master-Key':'$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK'}})
+  .then(r=>r.json()).then(d=>{
+    const q=d.record.queue, days=Math.round(d.record.base_days+q*d.record.days_per_order);
+    const el=document.getElementById('deliveryEst');
+    if(el)el.textContent='Timp execuție ~'+days+' zile lucrătoare';
+  }).catch(()=>{});
+}
+
+onResize();buildColors();buildLaces();buildSoles();buildSizes();
+applyURLConfig();syncPanel();updSum();animate();
+if(VIEW_MODE)activateViewMode();
+loadShoe();loadDelivery();
 </script>
 </body>
 </html>

@@ -12,10 +12,8 @@
   --border:#2C2720;--border2:#3A342C;
   --gold:#C8A96E;--gold2:#E2C98A;--gold-dim:#7A6540;
   --text:#EDE8DF;--muted:#8C8070;--muted2:#5A5248;
-  --green:#2A6A3A;--red:#6A2A2A;
 }
 html,body{min-height:100%;background:var(--ink);color:var(--text);font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-
 #loginBox{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:32px;width:320px;text-align:center;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.1em;color:var(--gold);margin-bottom:6px;}
 .login-sub{font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:24px;}
@@ -24,19 +22,16 @@ html,body{min-height:100%;background:var(--ink);color:var(--text);font-family:'I
 .btn{width:100%;padding:11px;background:var(--gold);color:var(--ink);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;transition:background .18s;}
 .btn:hover{background:var(--gold2);}
 .err{font-size:11px;color:#c06060;margin-top:8px;}
-
-#adminBox{display:none;width:420px;}
+#adminBox{display:none;width:460px;}
 header{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:32px;}
 .logo2{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;letter-spacing:.1em;color:var(--gold)}
 .logout{font-size:10px;color:var(--muted);cursor:pointer;border:1px solid var(--border);padding:4px 10px;border-radius:3px;background:none;letter-spacing:.05em;}
 .logout:hover{color:var(--text);}
-
 .stat-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;text-align:center;margin-bottom:24px;}
 .stat-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
 .stat-queue{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--gold);line-height:1;}
 .stat-days{font-size:12px;color:var(--muted);margin-top:8px;}
 .stat-est{font-size:14px;color:var(--text);margin-top:4px;font-weight:500;}
-
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
 .action-btn{padding:18px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:8px;}
 .action-icon{font-size:24px;}
@@ -44,16 +39,24 @@ header{width:100%;display:flex;align-items:center;justify-content:space-between;
 .btn-add:hover{background:rgba(42,106,58,.3);}
 .btn-ship{background:rgba(106,42,42,.15);border-color:#6A2A2A;color:#C07070;}
 .btn-ship:hover{background:rgba(106,42,42,.3);}
-
+.ship-form{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px;display:none;}
+.ship-form.show{display:block;}
+.ship-title{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.field{margin-bottom:12px;}
+.field label{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;letter-spacing:.06em;}
+.field input{width:100%;padding:9px 12px;background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;outline:none;}
+.field input:focus{border-color:var(--gold-dim);}
+.ship-btns{display:flex;gap:8px;margin-top:4px;}
+.ship-send{flex:1;padding:10px;background:var(--gold);color:var(--ink);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;}
+.ship-send:hover{background:var(--gold2);}
+.ship-cancel{padding:10px 14px;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;font-size:10px;letter-spacing:.08em;border:1px solid var(--border);cursor:pointer;border-radius:3px;}
 .log-box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;}
 .log-title{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .log-item{font-size:11px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
 .log-item:last-child{border-bottom:none;}
 .log-empty{font-size:11px;color:var(--muted2);text-align:center;padding:10px 0;}
-
 #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--gold);color:var(--text);padding:9px 20px;border-radius:3px;font-size:12px;opacity:0;transition:all .24s;pointer-events:none;z-index:999;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.loading{font-size:11px;color:var(--muted);text-align:center;padding:10px;}
 </style>
 </head>
 <body>
@@ -84,10 +87,34 @@ header{width:100%;display:flex;align-items:center;justify-content:space-between;
       <span class="action-icon">📦</span>
       <span>+1 Comandă nouă</span>
     </button>
-    <button class="action-btn btn-ship" onclick="shipOrder()">
+    <button class="action-btn btn-ship" onclick="showShipForm()">
       <span class="action-icon">🚚</span>
       <span>Expediat</span>
     </button>
+  </div>
+
+  <div class="ship-form" id="shipForm">
+    <div class="ship-title">Detalii expediere — trimite email client</div>
+    <div class="field">
+      <label>Nume client</label>
+      <input type="text" id="sfName" placeholder="ex: Andrei Popescu">
+    </div>
+    <div class="field">
+      <label>Email client</label>
+      <input type="email" id="sfEmail" placeholder="ex: client@gmail.com">
+    </div>
+    <div class="field">
+      <label>Număr tracking AWB</label>
+      <input type="text" id="sfTracking" placeholder="ex: 1234567890">
+    </div>
+    <div class="field">
+      <label>Curier</label>
+      <input type="text" id="sfCourier" placeholder="ex: Fan Courier">
+    </div>
+    <div class="ship-btns">
+      <button class="ship-send" onclick="shipOrder()">Trimite email & marchează expediat</button>
+      <button class="ship-cancel" onclick="hideShipForm()">Anulează</button>
+    </div>
   </div>
 
   <div class="log-box">
@@ -98,11 +125,17 @@ header{width:100%;display:flex;align-items:center;justify-content:space-between;
 
 <div id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 const PASS = 'razvanbitt2024';
 const BIN_ID = '6a3d95abf5f4af5e29311232';
 const API_KEY = '$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK';
 const API = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+const EJS_PUBLIC = 'Ffsln1L_JdnqqHsCe';
+const EJS_SERVICE = 'service_l0wy3y9';
+const EJS_TEMPLATE = 'qpepsy7';
+
+emailjs.init(EJS_PUBLIC);
 
 let logItems = JSON.parse(localStorage.getItem('rb_log') || '[]');
 
@@ -124,7 +157,6 @@ function logout(){
 }
 
 async function loadQueue(){
-  document.getElementById('statDays').textContent = 'Se încarcă...';
   try {
     const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
     const d = await r.json();
@@ -145,49 +177,84 @@ function updateUI(data){
   renderLog();
 }
 
-async function saveQueue(newQueue, action){
-  try {
-    const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
-    const d = await r.json();
-    const data = d.record;
-    data.queue = Math.max(0, newQueue);
+async function getQueue(){
+  const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
+  const d = await r.json();
+  return d.record;
+}
 
+async function saveQueue(newQueue, action, extra=''){
+  try {
+    const data = await getQueue();
+    data.queue = Math.max(0, newQueue);
     await fetch(API, {
       method: 'PUT',
       headers: {'Content-Type':'application/json','X-Master-Key': API_KEY},
       body: JSON.stringify(data)
     });
-
     const now = new Date().toLocaleString('ro-RO');
-    logItems.unshift({action, time: now, queue: data.queue});
+    logItems.unshift({action, time: now, queue: data.queue, extra});
     if(logItems.length > 20) logItems = logItems.slice(0, 20);
     localStorage.setItem('rb_log', JSON.stringify(logItems));
-
     updateUI(data);
-    toast(action === 'add' ? '✓ Comandă adăugată în producție' : '✓ Comandă marcată ca expediată');
   } catch(e){
     toast('Eroare — verifică conexiunea');
   }
 }
 
 async function addOrder(){
-  const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
-  const d = await r.json();
-  saveQueue(d.record.queue + 1, 'add');
+  const data = await getQueue();
+  await saveQueue(data.queue + 1, 'add');
+  toast('✓ Comandă adăugată în producție');
+}
+
+function showShipForm(){
+  document.getElementById('shipForm').classList.add('show');
+}
+
+function hideShipForm(){
+  document.getElementById('shipForm').classList.remove('show');
+  document.getElementById('sfName').value='';
+  document.getElementById('sfEmail').value='';
+  document.getElementById('sfTracking').value='';
+  document.getElementById('sfCourier').value='';
 }
 
 async function shipOrder(){
-  const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
-  const d = await r.json();
-  if(d.record.queue === 0){ toast('Nu există comenzi în producție.'); return; }
-  saveQueue(d.record.queue - 1, 'ship');
+  const name = document.getElementById('sfName').value.trim();
+  const email = document.getElementById('sfEmail').value.trim();
+  const tracking = document.getElementById('sfTracking').value.trim();
+  const courier = document.getElementById('sfCourier').value.trim();
+
+  if(!email){ toast('Introdu emailul clientului.'); return; }
+
+  toast('Se trimite emailul...');
+
+  try {
+    await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
+      title: 'Comanda ta a fost expediată!',
+      name: name || 'Client',
+      email: email,
+      message: `Comanda ta Razvan bit a fost expediată.\n\nNumăr tracking: ${tracking}\nCurier: ${courier}\n\nPuteți urmări coletul pe site-ul ${courier}.`
+    });
+
+    const data = await getQueue();
+    await saveQueue(Math.max(0, data.queue - 1), 'ship', email);
+    hideShipForm();
+    toast('✓ Email trimis și comandă marcată ca expediată');
+  } catch(e){
+    toast('Eroare trimitere email: ' + JSON.stringify(e));
+  }
 }
 
 function renderLog(){
   const el = document.getElementById('logList');
   if(!logItems.length){ el.innerHTML = '<div class="log-empty">Nicio acțiune înregistrată</div>'; return; }
   el.innerHTML = logItems.slice(0,8).map(i =>
-    `<div class="log-item"><span>${i.action==='add'?'📦 Comandă nouă':'🚚 Expediat'}</span><span style="color:var(--muted2)">${i.time} · coadă: ${i.queue}</span></div>`
+    `<div class="log-item">
+      <span>${i.action==='add'?'📦 Comandă nouă':'🚚 Expediat'} ${i.extra?'→ '+i.extra:''}</span>
+      <span style="color:var(--muted2)">${i.time} · coadă: ${i.queue}</span>
+    </div>`
   ).join('');
 }
 
@@ -195,7 +262,7 @@ function toast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2600);
+  setTimeout(()=>t.classList.remove('show'), 3000);
 }
 </script>
 </body>
