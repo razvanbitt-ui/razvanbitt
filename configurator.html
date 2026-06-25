@@ -285,45 +285,50 @@ function loadShoe(){
   const dracoLoader=new THREE.DRACOLoader();
   dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
   loader.setDRACOLoader(dracoLoader);
-  document.getElementById('ldTxt').textContent='Se încarcă modelul...';
+  document.getElementById('ldTxt').textContent='Se incarca modelul...';
   document.getElementById('ldBar').style.width='10%';
-  const glbUrl = MODEL.glb.startsWith('http') ? MODEL.glb : location.origin + location.pathname.replace('configurator.html','') + MODEL.glb;
-  fetch(glbUrl)
-    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);document.getElementById('ldBar').style.width='50%';return r.arrayBuffer();})
-    .then(buffer=>{
-      document.getElementById('ldBar').style.width='80%';
-      loader.parse(buffer,'',gltf=>{
-        shoeModel=gltf.scene||gltf;
-        upperMeshes=[];soleMeshes=[];laceMeshes=[];clickable=[];
-        shoeModel.traverse(obj=>{
-          if(obj.isMesh){
-            obj.castShadow=true;obj.receiveShadow=true;
-            const zone=classifyMesh(obj.name);
-            obj.userData.zone=zone;
-            if(zone==='sole')soleMeshes.push(obj);
-            else if(zone==='laces')laceMeshes.push(obj);
-            else upperMeshes.push(obj);
-            clickable.push(obj);
-          }
-        });
-        const box=new THREE.Box3().setFromObject(shoeModel);
-        const center=new THREE.Vector3();box.getCenter(center);
-        const size=new THREE.Vector3();box.getSize(size);
-        const scale=2.0/Math.max(size.x,size.y,size.z);
-        shoeModel.scale.setScalar(scale);
-        shoeModel.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
-        const box2=new THREE.Box3().setFromObject(shoeModel);
-        ground.position.y=box2.min.y-0.01;
-        scene.add(shoeModel);
-        const maxS=Math.max(size.x,size.y,size.z)*scale;
-        tD=maxS*2.8;dist=tD;
-        applyColors();
-        const ls=document.getElementById('loadingScreen');
-        ls.style.transition='opacity .5s';ls.style.opacity='0';
-        setTimeout(()=>ls.style.display='none',500);
-      },err=>{document.getElementById('ldTxt').textContent='Parse eroare: '+(err&&err.message?err.message:JSON.stringify(err));});
-    })
-    .catch(err=>{document.getElementById('ldTxt').textContent='Eroare: '+err.message;});
+  const base=location.href.replace(/\/configurator\.html.*/,'/')||'./';
+  const glbUrl=base+MODEL.glb;
+  loader.load(
+    glbUrl,
+    function(gltf){
+      shoeModel=gltf.scene;
+      upperMeshes=[];soleMeshes=[];laceMeshes=[];clickable=[];
+      shoeModel.traverse(function(obj){
+        if(obj.isMesh){
+          obj.castShadow=true;obj.receiveShadow=true;
+          var zone=classifyMesh(obj.name);
+          obj.userData.zone=zone;
+          if(zone==='sole')soleMeshes.push(obj);
+          else if(zone==='laces')laceMeshes.push(obj);
+          else upperMeshes.push(obj);
+          clickable.push(obj);
+        }
+      });
+      var box=new THREE.Box3().setFromObject(shoeModel);
+      var center=new THREE.Vector3();box.getCenter(center);
+      var size=new THREE.Vector3();box.getSize(size);
+      var scale=2.0/Math.max(size.x,size.y,size.z);
+      shoeModel.scale.setScalar(scale);
+      shoeModel.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
+      var box2=new THREE.Box3().setFromObject(shoeModel);
+      ground.position.y=box2.min.y-0.01;
+      scene.add(shoeModel);
+      var maxS=Math.max(size.x,size.y,size.z)*scale;
+      tD=maxS*2.8;dist=tD;
+      applyColors();
+      var ls=document.getElementById('loadingScreen');
+      ls.style.transition='opacity .5s';ls.style.opacity='0';
+      setTimeout(function(){ls.style.display='none';},500);
+    },
+    function(xhr){
+      if(xhr.total){document.getElementById('ldBar').style.width=(xhr.loaded/xhr.total*80+10)+'%';}
+    },
+    function(err){
+      document.getElementById('ldTxt').textContent='Eroare incarcare model';
+      console.error('GLB load error:',err);
+    }
+  );
 }
 
 function applyColors(){
