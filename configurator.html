@@ -256,8 +256,8 @@ const cam=new THREE.PerspectiveCamera(38,1,0.01,100);
 scene.add(new THREE.AmbientLight(0xfff4e0,0.6));
 const kl=new THREE.DirectionalLight(0xfff8f0,2.0);
 kl.position.set(3,5,4);kl.castShadow=true;kl.shadow.mapSize.set(2048,2048);scene.add(kl);
-scene.add(Object.assign(new THREE.DirectionalLight(0xc8a96e,0.5),{position:{x:-3,y:2,z:-2}}));
-scene.add(Object.assign(new THREE.DirectionalLight(0xffffff,0.3),{position:{x:0,y:0,z:-4}}));
+const fl=new THREE.DirectionalLight(0xc8a96e,0.5);fl.position.set(-3,2,-2);scene.add(fl);
+const rl=new THREE.DirectionalLight(0xffffff,0.3);rl.position.set(0,0,-4);scene.add(rl);
 
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.ShadowMaterial({opacity:0.3}));
 ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
