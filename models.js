@@ -36,7 +36,7 @@ const MODELS = [
   },
 
   // --- Adaugă modele noi mai jos, după același format ---
-  //      {
+        {
     id: 'test_cube',
     name: 'Test Cub',
     subtitle: 'Model de test',
