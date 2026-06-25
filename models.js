@@ -57,7 +57,7 @@ const MODELS = [
     ],
     sizes: [39,40,41,42,43,44,45],
     sizesNA: [],
-  },{
+  },{ 
     id: 'shoe_v1',
     name: 'Model V1',
     subtitle: 'Test model extern',
@@ -72,6 +72,32 @@ const MODELS = [
     laces: [
       {id:'white', hex:'#F0EBE0', lb:'Alb'},
       {id:'black', hex:'#111111', lb:'Negru'},
+    ],
+    soles: [
+      {id:'white', nm:'Alba',   ds:'Sport',   ic:'⬜', hex:'#E8E4DC', ex:0},
+      {id:'black', nm:'Neagra', ds:'Elegant', ic:'⬛', hex:'#1A1A1A', ex:0},
+    ],
+    sizes: [39,40,41,42,43,44,45],
+    sizesNA: [],
+  },{
+    id: 'davidicus',
+    name: 'Model Davidicus',
+    subtitle: 'Sneaker test',
+    price: 890,
+    glb: 'davidicus_fixed.glb',
+    img: '',
+    colors: [
+      {id:'natural', hex:'#C4A882', lb:'Natural'},
+      {id:'black',   hex:'#111111', lb:'Negru'},
+      {id:'bordeaux',hex:'#5C1A28', lb:'Bordeaux'},
+      {id:'cognac',  hex:'#7A3B10', lb:'Coniac'},
+      {id:'navy',    hex:'#1A2550', lb:'Navy'},
+      {id:'white',   hex:'#F0EBE0', lb:'Alb'},
+    ],
+    laces: [
+      {id:'white', hex:'#F0EBE0', lb:'Alb'},
+      {id:'black', hex:'#111111', lb:'Negru'},
+      {id:'gold',  hex:'#C8A96E', lb:'Auriu'},
     ],
     soles: [
       {id:'white', nm:'Alba',   ds:'Sport',   ic:'⬜', hex:'#E8E4DC', ex:0},
