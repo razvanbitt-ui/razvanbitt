@@ -164,16 +164,72 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
         <button class="cta" onclick="addToCart()">Adaugă în coș</button>
         <button class="cta-g" onclick="shareConf()">Salvează configurația</button>
       </div>
-      <div style="font-size:9px;color:var(--muted2);text-align:center;line-height:1.7">Timp execuție 14–21 zile · Transport gratuit peste 500 RON</div>
+      <div style="font-size:9px;color:var(--muted2);text-align:center;line-height:1.7"><span id="deliveryEst">Se calculează...</span> · Transport gratuit peste 500 RON</div>
     </div>
   </div>
 </div>
 <div id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
-<script src="models.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">function loadDelivery(){
+  const BIN_ID="6a3d95abf5f4af5e29311232";
+  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
+  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
+  .then(r=>r.json()).then(d=>{
+    const q=d.record.queue;
+    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
+  }).catch(()=>{
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție 14–21 zile";
+  });
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js">function loadDelivery(){
+  const BIN_ID="6a3d95abf5f4af5e29311232";
+  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
+  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
+  .then(r=>r.json()).then(d=>{
+    const q=d.record.queue;
+    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
+  }).catch(()=>{
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție 14–21 zile";
+  });
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js">function loadDelivery(){
+  const BIN_ID="6a3d95abf5f4af5e29311232";
+  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
+  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
+  .then(r=>r.json()).then(d=>{
+    const q=d.record.queue;
+    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
+  }).catch(()=>{
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție 14–21 zile";
+  });
+}
+</script>
+<script src="models.js">function loadDelivery(){
+  const BIN_ID="6a3d95abf5f4af5e29311232";
+  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
+  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
+  .then(r=>r.json()).then(d=>{
+    const q=d.record.queue;
+    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
+  }).catch(()=>{
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție 14–21 zile";
+  });
+}
+</script>
 <script>
 
 // --- Citeste modelul din URL (?model=shoe2) ---
@@ -519,6 +575,21 @@ function shareConf(){try{navigator.clipboard.writeText(location.href).then(()=>t
 
 onResize();buildColors();buildLaces();buildSoles();buildSizes();updSum();animate();
 loadShoe();
+loadDelivery();
+function loadDelivery(){
+  const BIN_ID="6a3d95abf5f4af5e29311232";
+  const API_KEY="$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK";
+  fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":API_KEY}})
+  .then(r=>r.json()).then(d=>{
+    const q=d.record.queue;
+    const days=Math.round(d.record.base_days+q*d.record.days_per_order);
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție ~"+days+" zile lucrătoare";
+  }).catch(()=>{
+    const el=document.getElementById("deliveryEst");
+    if(el)el.textContent="Timp execuție 14–21 zile";
+  });
+}
 </script>
 </body>
 </html>

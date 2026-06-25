@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Razvan bit — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0A0806;--panel:#161410;--card:#1D1A16;
+  --border:#2C2720;--border2:#3A342C;
+  --gold:#C8A96E;--gold2:#E2C98A;--gold-dim:#7A6540;
+  --text:#EDE8DF;--muted:#8C8070;--muted2:#5A5248;
+  --green:#2A6A3A;--red:#6A2A2A;
+}
+html,body{min-height:100%;background:var(--ink);color:var(--text);font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+#loginBox{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:32px;width:320px;text-align:center;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.1em;color:var(--gold);margin-bottom:6px;}
+.login-sub{font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:24px;}
+.inp{width:100%;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;margin-bottom:12px;}
+.inp:focus{border-color:var(--gold-dim);}
+.btn{width:100%;padding:11px;background:var(--gold);color:var(--ink);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;transition:background .18s;}
+.btn:hover{background:var(--gold2);}
+.err{font-size:11px;color:#c06060;margin-top:8px;}
+
+#adminBox{display:none;width:420px;}
+header{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:32px;}
+.logo2{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;letter-spacing:.1em;color:var(--gold)}
+.logout{font-size:10px;color:var(--muted);cursor:pointer;border:1px solid var(--border);padding:4px 10px;border-radius:3px;background:none;letter-spacing:.05em;}
+.logout:hover{color:var(--text);}
+
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;text-align:center;margin-bottom:24px;}
+.stat-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-queue{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--gold);line-height:1;}
+.stat-days{font-size:12px;color:var(--muted);margin-top:8px;}
+.stat-est{font-size:14px;color:var(--text);margin-top:4px;font-weight:500;}
+
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.action-btn{padding:18px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.action-icon{font-size:24px;}
+.btn-add{background:rgba(42,106,58,.15);border-color:#2A6A3A;color:#5AB87A;}
+.btn-add:hover{background:rgba(42,106,58,.3);}
+.btn-ship{background:rgba(106,42,42,.15);border-color:#6A2A2A;color:#C07070;}
+.btn-ship:hover{background:rgba(106,42,42,.3);}
+
+.log-box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:14px;}
+.log-title{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.log-item{font-size:11px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+.log-item:last-child{border-bottom:none;}
+.log-empty{font-size:11px;color:var(--muted2);text-align:center;padding:10px 0;}
+
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--card);border:1px solid var(--gold);color:var(--text);padding:9px 20px;border-radius:3px;font-size:12px;opacity:0;transition:all .24s;pointer-events:none;z-index:999;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.loading{font-size:11px;color:var(--muted);text-align:center;padding:10px;}
+</style>
+</head>
+<body>
+
+<div id="loginBox">
+  <div class="logo">Razvan bit</div>
+  <div class="login-sub">Panou de administrare</div>
+  <input type="password" class="inp" id="passInp" placeholder="Parolă" onkeydown="if(event.key==='Enter')login()">
+  <button class="btn" onclick="login()">Intră</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<div id="adminBox">
+  <header>
+    <div class="logo2">Razvan bit — Admin</div>
+    <button class="logout" onclick="logout()">Ieșire</button>
+  </header>
+
+  <div class="stat-box">
+    <div class="stat-label">Comenzi în producție</div>
+    <div class="stat-queue" id="queueNum">—</div>
+    <div class="stat-days" id="statDays">Se încarcă...</div>
+    <div class="stat-est" id="statEst"></div>
+  </div>
+
+  <div class="actions">
+    <button class="action-btn btn-add" onclick="addOrder()">
+      <span class="action-icon">📦</span>
+      <span>+1 Comandă nouă</span>
+    </button>
+    <button class="action-btn btn-ship" onclick="shipOrder()">
+      <span class="action-icon">🚚</span>
+      <span>Expediat</span>
+    </button>
+  </div>
+
+  <div class="log-box">
+    <div class="log-title">Istoric recent</div>
+    <div id="logList"><div class="log-empty">Nicio acțiune înregistrată</div></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const PASS = 'razvanbitt2024';
+const BIN_ID = '6a3d95abf5f4af5e29311232';
+const API_KEY = '$2a$10$xDQlFPnwt4eqdA84101lk.1gjVyxuV7dCMt9h9Eb19tHBP2YVV3GK';
+const API = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+
+let logItems = JSON.parse(localStorage.getItem('rb_log') || '[]');
+
+function login(){
+  const p = document.getElementById('passInp').value;
+  if(p === PASS){
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminBox').style.display = 'block';
+    loadQueue();
+  } else {
+    document.getElementById('loginErr').textContent = 'Parolă greșită.';
+  }
+}
+
+function logout(){
+  document.getElementById('loginBox').style.display = 'flex';
+  document.getElementById('adminBox').style.display = 'none';
+  document.getElementById('passInp').value = '';
+}
+
+async function loadQueue(){
+  document.getElementById('statDays').textContent = 'Se încarcă...';
+  try {
+    const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
+    const d = await r.json();
+    updateUI(d.record);
+  } catch(e){
+    document.getElementById('statDays').textContent = 'Eroare conexiune.';
+  }
+}
+
+function updateUI(data){
+  const q = data.queue;
+  const days = Math.round(data.base_days + q * data.days_per_order);
+  document.getElementById('queueNum').textContent = q;
+  document.getElementById('statDays').textContent = q === 0
+    ? 'Nicio comandă în producție'
+    : q + ' ' + (q===1?'comandă':'comenzi') + ' × ' + data.days_per_order + ' zile';
+  document.getElementById('statEst').textContent = 'Timp estimat pentru următoarea comandă: ' + days + ' zile lucrătoare';
+  renderLog();
+}
+
+async function saveQueue(newQueue, action){
+  try {
+    const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
+    const d = await r.json();
+    const data = d.record;
+    data.queue = Math.max(0, newQueue);
+
+    await fetch(API, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json','X-Master-Key': API_KEY},
+      body: JSON.stringify(data)
+    });
+
+    const now = new Date().toLocaleString('ro-RO');
+    logItems.unshift({action, time: now, queue: data.queue});
+    if(logItems.length > 20) logItems = logItems.slice(0, 20);
+    localStorage.setItem('rb_log', JSON.stringify(logItems));
+
+    updateUI(data);
+    toast(action === 'add' ? '✓ Comandă adăugată în producție' : '✓ Comandă marcată ca expediată');
+  } catch(e){
+    toast('Eroare — verifică conexiunea');
+  }
+}
+
+async function addOrder(){
+  const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
+  const d = await r.json();
+  saveQueue(d.record.queue + 1, 'add');
+}
+
+async function shipOrder(){
+  const r = await fetch(API + '/latest', {headers:{'X-Master-Key': API_KEY}});
+  const d = await r.json();
+  if(d.record.queue === 0){ toast('Nu există comenzi în producție.'); return; }
+  saveQueue(d.record.queue - 1, 'ship');
+}
+
+function renderLog(){
+  const el = document.getElementById('logList');
+  if(!logItems.length){ el.innerHTML = '<div class="log-empty">Nicio acțiune înregistrată</div>'; return; }
+  el.innerHTML = logItems.slice(0,8).map(i =>
+    `<div class="log-item"><span>${i.action==='add'?'📦 Comandă nouă':'🚚 Expediat'}</span><span style="color:var(--muted2)">${i.time} · coadă: ${i.queue}</span></div>`
+  ).join('');
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+</script>
+</body>
+</html>
