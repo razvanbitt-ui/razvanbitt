@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -112,7 +113,6 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
 <div id="app">
   <header>
     <div class="logo">Razvan bit</div>
-    <a href="gallery.html" style="font-size:10px;color:var(--muted);letter-spacing:.05em;text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:3px;transition:color .15s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">← Înapoi la colecție</a>
     <div style="font-size:10px;color:var(--muted);letter-spacing:.05em">Click pe pantof · Drag rotire · Scroll zoom</div>
     <div style="font-size:10px;color:var(--muted)">Made to Order</div>
   </header>
@@ -121,7 +121,7 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
     <div id="loadingScreen">
       <div class="ld-logo">Razvan bit</div>
       <div class="ld-bar-wrap"><div class="ld-bar" id="ldBar"></div></div>
-      <div class="ld-txt" id="ldTxt">Se pregătește...</div>
+      <div class="ld-txt" id="ldTxt">Se încarcă modelul...</div>
     </div>
     <div class="part-label" id="partLabel" style="opacity:0"></div>
     <div class="zoom-btns">
@@ -140,7 +140,7 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
   <div id="panel">
     <div class="p-inner">
       <div class="p-head">
-        <div class="p-title" id="modelTitle">Creează <em>perechea ta</em></div>
+        <div class="p-title">Creează <em>perechea ta</em></div>
         <div class="p-sub">Fiecare detaliu, ales de tine · Confecționat manual</div>
       </div>
       <div><div class="sec-lbl">Culoare</div><div class="col-row" id="colorRow"></div></div>
@@ -148,10 +148,7 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
       <div><div class="sec-lbl">Șireturi</div><div class="lace-row" id="laceRow"></div></div>
       <div>
         <div class="sec-lbl">Inițiale / Gravură</div>
-        <div class="init-box">
-          <input type="text" id="initInp" maxlength="6" placeholder="RB" oninput="onInit(this.value)">
-          <div class="init-hint">Max 6 caractere<br>Gravate pe pantof</div>
-        </div>
+        <div class="init-box"><input type="text" id="initInp" maxlength="6" placeholder="RB" oninput="onInit(this.value)"/><div class="init-hint">Max 6 caractere<br>Gravate pe pantof</div></div>
         <div class="pos-btns">
           <button class="pos-btn on" onclick="setPos(this,'heel')">Călcâi</button>
           <button class="pos-btn" onclick="setPos(this,'tongue')">Limbă</button>
@@ -170,104 +167,114 @@ header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-be
 </div>
 <div id="toast"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="models.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <script>
+// GLTFLoader inline (r128)
 
-// --- Citește modelul din URL (?model=shoe2) ---
-const urlParams = new URLSearchParams(window.location.search);
-const modelId = urlParams.get('model') || (typeof MODELS !== 'undefined' && MODELS[0] ? MODELS[0].id : 'shoe2');
-const MODEL = (typeof MODELS !== 'undefined' ? MODELS : []).find(m => m.id === modelId) || MODELS[0];
+</script>
+<script>
+const COLORS=[
+  {id:'natural',hex:'#C4A882',lb:'Natural'},{id:'cream',hex:'#EDE3CC',lb:'Crem'},
+  {id:'black',hex:'#111111',lb:'Negru'},{id:'bordeaux',hex:'#5C1A28',lb:'Bordeaux'},
+  {id:'cognac',hex:'#7A3B10',lb:'Coniac'},{id:'navy',hex:'#1A2550',lb:'Navy'},
+  {id:'forest',hex:'#1E3D1E',lb:'Verde'},{id:'gold',hex:'#B8922A',lb:'Auriu'},
+  {id:'grey',hex:'#5A5A5A',lb:'Gri'},{id:'white',hex:'#F0EBE0',lb:'Alb'},
+];
+const LACES=[
+  {id:'white',hex:'#F0EBE0',lb:'Alb'},{id:'black',hex:'#111111',lb:'Negru'},
+  {id:'cream',hex:'#D4C9A8',lb:'Crem'},{id:'gold',hex:'#C8A96E',lb:'Auriu'},
+  {id:'red',hex:'#8B1A1A',lb:'Rosu'},{id:'navy',hex:'#1A2550',lb:'Navy'},
+  {id:'grey',hex:'#888888',lb:'Gri'},
+];
+const SOLES=[
+  {id:'white',nm:'Alba',   ds:'Sport',    ic:'⬜',hex:'#E8E4DC',ex:0},
+  {id:'black',nm:'Neagra', ds:'Elegant',  ic:'⬛',hex:'#1A1A1A',ex:0},
+  {id:'beige',nm:'Bej',    ds:'Natural',  ic:'🟫',hex:'#C8B89A',ex:0},
+  {id:'custom',nm:'Custom',ds:'La cerere',ic:'✦', hex:'#D4AF37',ex:150},
+];
+const SIZES=[38,39,40,41,42,43,44,45,46,47],NA=[38,47],BASE=890;
+const S={col:COLORS[0],lc:LACES[0],sl:SOLES[0],ini:'',ipos:'heel',sz:null};
 
-if (!MODEL) {
-  document.getElementById('ldTxt').textContent = 'Model negăsit.';
-}
+// THREE setup
+const c3=document.getElementById('c3d');
+const renderer=new THREE.WebGLRenderer({canvas:c3,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.4;
+renderer.setClearColor(0x0A0806,1);
 
-const COLORS = MODEL.colors;
-const LACES  = MODEL.laces;
-const SOLES  = MODEL.soles;
-const SIZES  = MODEL.sizes;
-const NA     = MODEL.sizesNA;
-const BASE   = MODEL.price;
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(38,1,0.01,100);
 
-document.getElementById('modelTitle').innerHTML = MODEL.name + ' — <em>perechea ta</em>';
-
-const S = {col:COLORS[0], lc:LACES[0], sl:SOLES[0], ini:'', ipos:'heel', sz:null};
-
-// --- THREE setup ---
-const c3 = document.getElementById('c3d');
-const renderer = new THREE.WebGLRenderer({canvas:c3, antialias:true, alpha:false});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.4;
-renderer.setClearColor(0x0A0806, 1);
-
-const scene = new THREE.Scene();
-const cam = new THREE.PerspectiveCamera(38, 1, 0.01, 100);
-
-scene.add(new THREE.AmbientLight(0xfff4e0, 0.6));
-const kl = new THREE.DirectionalLight(0xfff8f0, 2.0);
-kl.position.set(3,5,4); kl.castShadow = true;
+// Lights
+scene.add(new THREE.AmbientLight(0xfff4e0,0.6));
+const kl=new THREE.DirectionalLight(0xfff8f0,2.0);
+kl.position.set(3,5,4);kl.castShadow=true;
 kl.shadow.mapSize.set(2048,2048);
 scene.add(kl);
-const fl = new THREE.DirectionalLight(0xc8a96e, 0.5);
-fl.position.set(-3,2,-2); scene.add(fl);
-const rl = new THREE.DirectionalLight(0xffffff, 0.3);
-rl.position.set(0,0,-4); scene.add(rl);
+const fl=new THREE.DirectionalLight(0xc8a96e,0.5);
+fl.position.set(-3,2,-2);scene.add(fl);
+const rl=new THREE.DirectionalLight(0xffffff,0.3);
+rl.position.set(0,0,-4);scene.add(rl);
 
-const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(10,10),
-  new THREE.ShadowMaterial({opacity:0.3})
-);
-ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
+// Ground
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.ShadowMaterial({opacity:0.3}));
+ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;
 scene.add(ground);
 
-const RC = new THREE.Raycaster();
-const MV = new THREE.Vector2();
+// Raycaster
+const RC=new THREE.Raycaster();
+const MV=new THREE.Vector2();
 
-let shoeModel=null, upperMeshes=[], soleMeshes=[], laceMeshes=[], clickable=[];
+// Shoe model
+let shoeModel=null;
+let upperMeshes=[],soleMeshes=[],laceMeshes=[];
+let clickable=[];
 
+// Classify mesh by name
 function classifyMesh(name){
   const n=(name||'').toLowerCase();
   if(n.includes('sole'))return'sole';
-  if(n.includes('lace')||n.includes('laces'))return'laces';
-  if(n.includes('lining')||n.includes('inner'))return'lining';
-  if(n.includes('insole'))return'insole';
-  if(n.includes('eyestay'))return'eyestay';
-  if(n.includes('eyelet'))return'eyelet';
-  if(n.includes('tip')||n.includes('toecap')||n.includes('tip_vamp'))return'tipvamp';
-  if(n.includes('tongue'))return'tongue';
-  if(n.includes('collar'))return'collar';
-  if(n.includes('quarter'))return'quarter';
-  if(n.includes('heel_tab')||n.includes('heeltab'))return'heeltab';
-  if(n.includes('heel_counter')||n.includes('heelcounter'))return'heelcounter';
-  if(n.includes('vamp'))return'vamp';
+  if(n.includes('lace'))return'lace';
+  if(n.includes('inner'))return'inner';
   return'upper';
 }
 
+// After loading, print mesh names to console for debugging
+function printMeshNames(){
+  if(!shoeModel)return;
+  shoeModel.traverse(obj=>{
+    if(obj.isMesh) console.log('Mesh:', obj.name, '-> zone:', obj.userData.zone);
+  });
+}
+
 function loadShoe(){
-  const loader = new THREE.GLTFLoader();
-  document.getElementById('ldTxt').textContent = 'Se încarcă modelul...';
-  document.getElementById('ldBar').style.width = '10%';
-  fetch(MODEL.glb)
-    .then(r=>{
+  const loader=new THREE.GLTFLoader();
+  const dracoLoader=new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+  loader.setDRACOLoader(dracoLoader);
+  document.getElementById('ldTxt').textContent='Se încarcă modelul...';
+  document.getElementById('ldBar').style.width='10%';
+  fetch('shoe.glb')
+    .then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
       document.getElementById('ldBar').style.width='50%';
       document.getElementById('ldTxt').textContent='Se procesează...';
       return r.arrayBuffer();
     })
-    .then(buffer=>{
+    .then(function(buffer){
       document.getElementById('ldBar').style.width='80%';
-      loader.parse(buffer,'',gltf=>{
+      loader.parse(buffer,'',function(gltf){
         shoeModel=gltf.scene||gltf;
         upperMeshes=[];soleMeshes=[];laceMeshes=[];clickable=[];
-        shoeModel.traverse(obj=>{
+        shoeModel.traverse(function(obj){
           if(obj.isMesh){
-            obj.castShadow=true; obj.receiveShadow=true;
+            obj.castShadow=true;obj.receiveShadow=true;
             const zone=classifyMesh(obj.name);
             obj.userData.zone=zone;
             if(zone==='upper')upperMeshes.push(obj);
@@ -282,7 +289,7 @@ function loadShoe(){
         const size=new THREE.Vector3();
         box.getSize(size);
         const maxDim=Math.max(size.x,size.y,size.z);
-        const scale=8.2/maxDim;
+        const scale=2.0/maxDim;
         shoeModel.scale.setScalar(scale);
         shoeModel.position.set(-center.x*scale,-center.y*scale,-center.z*scale);
         const box2=new THREE.Box3().setFromObject(shoeModel);
@@ -290,25 +297,30 @@ function loadShoe(){
         scene.add(shoeModel);
         const scaledSize=size.clone().multiplyScalar(scale);
         const maxS=Math.max(scaledSize.x,scaledSize.y,scaledSize.z);
-        tD=maxS*(window.innerWidth<860?1.8:1.2); dist=tD;
+        tD=maxS*2.8;dist=tD;
         applyColors();
         hideSkeleton();
         hideLoading();
-      }, err=>{
-        document.getElementById('ldTxt').textContent='Eroare: '+err.message;
+        setTimeout(printMeshNames, 500);
+      },function(err){
+        console.error(err);
+        document.getElementById('ldTxt').textContent='Eroare parse: '+err.message;
       });
     })
-    .catch(err=>{
+    .catch(function(err){
+      console.error(err);
       document.getElementById('ldTxt').textContent='Eroare: '+err.message;
     });
 }
 
 function hideSkeleton(){
+  // Hide any bone/armature helpers
   scene.traverse(o=>{
     if(o.isSkinnedMesh)o.visible=false;
     if(o.isBone)o.visible=false;
   });
 }
+
 function hideLoading(){
   const ls=document.getElementById('loadingScreen');
   ls.style.transition='opacity .5s';
@@ -321,45 +333,47 @@ function applyColors(){
   const mainCol=new THREE.Color(S.col.hex);
   const soleCol=new THREE.Color(S.sl.hex);
   const laceCol=new THREE.Color(S.lc.hex);
-  function setColor(mesh,color){
-    if(!mesh.material)return;
-    const mats=Array.isArray(mesh.material)?mesh.material:[mesh.material];
+
+  function setColor(mesh, color){
+    if(!mesh.material) return;
+    const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
     mats.forEach(mat=>{
+      // Clone material once to avoid affecting other meshes sharing it
       if(!mat.userData.cloned){
-        const clone=mat.clone(); clone.userData.cloned=true;
-        if(Array.isArray(mesh.material)){const idx=mesh.material.indexOf(mat);mesh.material[idx]=clone;}
-        else mesh.material=clone;
-        mat=clone;
+        const clone = mat.clone();
+        clone.userData.cloned = true;
+        if(Array.isArray(mesh.material)){
+          const idx = mesh.material.indexOf(mat);
+          mesh.material[idx] = clone;
+        } else {
+          mesh.material = clone;
+        }
+        mat = clone;
       }
-      mat.color.copy(color); mat.needsUpdate=true;
+      mat.color.copy(color);
+      mat.needsUpdate=true;
     });
   }
-  upperMeshes.forEach(m=>setColor(m,mainCol));
-  soleMeshes.forEach(m=>setColor(m,soleCol));
-  laceMeshes.forEach(m=>setColor(m,laceCol));
+
+  upperMeshes.forEach(m=>setColor(m, mainCol));
+  soleMeshes.forEach(m=>setColor(m, soleCol));
+  laceMeshes.forEach(m=>setColor(m, laceCol));
 }
 
 // Orbit
 let rotY=0.5,rotX=0.15,tRY=0.5,tRX=0.15,dist=5,tD=5;
 let autoR=true,drag=false,sx=0,sy=0,px=0,py=0;
+
 c3.addEventListener('mousedown',e=>{drag=true;sx=e.clientX;sy=e.clientY;px=e.clientX;py=e.clientY;autoR=false;});
-window.addEventListener('mousemove',e=>{if(!drag)return;tRY-=(e.clientX-px)*0.012;tRX+=(e.clientY-py)*0.006;tRX=Math.max(-1.4,Math.min(1.4,tRX));px=e.clientX;py=e.clientY;});
+window.addEventListener('mousemove',e=>{if(!drag)return;tRY+=(e.clientX-px)*0.012;tRX+=(e.clientY-py)*0.006;tRX=Math.max(-0.5,Math.min(0.6,tRX));px=e.clientX;py=e.clientY;});
 window.addEventListener('mouseup',e=>{if(!drag)return;drag=false;if(Math.abs(e.clientX-sx)<6&&Math.abs(e.clientY-sy)<6)doClick(e.clientX,e.clientY);});
 c3.addEventListener('wheel',e=>{tD=Math.max(1,Math.min(10,tD+e.deltaY*0.004));e.preventDefault();},{passive:false});
-let tx0=0,ty0=0,tsx=0,tsy=0,tpinch0=0;
-c3.addEventListener('touchstart',e=>{
-  if(e.touches.length===1){drag=true;tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;autoR=false;}
-  else if(e.touches.length===2){drag=false;const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;tpinch0=Math.sqrt(dx*dx+dy*dy);}
-},{passive:true});
-c3.addEventListener('touchmove',e=>{
-  if(drag)e.preventDefault();
-  if(e.touches.length===1&&drag){tRY-=(e.touches[0].clientX-tx0)*0.012;tRX+=(e.touches[0].clientY-ty0)*0.006;tRX=Math.max(-1.4,Math.min(1.4,tRX));tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;}
-  else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d2=Math.sqrt(dx*dx+dy*dy);if(tpinch0>0)tD=Math.max(1,Math.min(10,tD-(d2-tpinch0)*0.02));tpinch0=d2;}
-},{passive:false});
-c3.addEventListener('touchend',e=>{
-  if(e.touches.length===0){drag=false;if(e.changedTouches.length&&Math.abs(e.changedTouches[0].clientX-tsx)<8&&Math.abs(e.changedTouches[0].clientY-tsy)<8)doClick(e.changedTouches[0].clientX,e.changedTouches[0].clientY);}
-});
+let tx0=0,tsx=0;
+c3.addEventListener('touchstart',e=>{drag=true;tsx=e.touches[0].clientX;tx0=e.touches[0].clientX;autoR=false;},{passive:true});
+c3.addEventListener('touchmove',e=>{if(!drag)return;tRY-=(e.touches[0].clientX-tx0)*0.014;tx0=e.touches[0].clientX;},{passive:true});
+c3.addEventListener('touchend',e=>{drag=false;if(e.changedTouches.length&&Math.abs(e.changedTouches[0].clientX-tsx)<8)doClick(e.changedTouches[0].clientX,e.changedTouches[0].clientY);});
 
+// Hover
 c3.addEventListener('mousemove',e=>{
   if(drag)return;
   const p=rc(e.clientX,e.clientY);
@@ -390,6 +404,7 @@ function openPopup(cx,cy,zone){
   const body=document.getElementById('popBody');
   document.getElementById('popZone').textContent={upper:'Culoare principală',sole:'Talpă',lace:'Șireturi'}[zone];
   body.innerHTML='';
+
   if(zone==='upper'){
     const t1=document.createElement('div');t1.className='pop-stitle';t1.textContent='Culoare';body.appendChild(t1);
     const cr=document.createElement('div');cr.className='dot-row';
@@ -399,7 +414,7 @@ function openPopup(cx,cy,zone){
       d.onclick=()=>{S.col=col;cr.querySelectorAll('.pdot').forEach(x=>x.classList.remove('on'));d.classList.add('on');syncPanel();applyColors();updSum();};
       cr.appendChild(d);
     });body.appendChild(cr);
-  } else if(zone==='sole'){
+  }else if(zone==='sole'){
     const sr=document.createElement('div');sr.className='sole-row';
     SOLES.forEach(sl=>{
       const o=document.createElement('div');o.className='psole'+(S.sl.id===sl.id?' on':'');
@@ -407,7 +422,7 @@ function openPopup(cx,cy,zone){
       o.onclick=()=>{S.sl=sl;sr.querySelectorAll('.psole').forEach(x=>x.classList.remove('on'));o.classList.add('on');syncPanel();applyColors();updSum();};
       sr.appendChild(o);
     });body.appendChild(sr);
-  } else if(zone==='lace'){
+  }else if(zone==='lace'){
     const lr=document.createElement('div');lr.className='dot-row';
     LACES.forEach(lc=>{
       const d=document.createElement('div');d.className='pdot'+(S.lc.id===lc.id?' on':'');
@@ -416,6 +431,7 @@ function openPopup(cx,cy,zone){
       lr.appendChild(d);
     });body.appendChild(lr);
   }
+
   const pw=230;let ppx=cx+12,ppy=cy-10;
   if(ppx+pw>window.innerWidth-8)ppx=cx-pw-8;
   if(ppy<8)ppy=8;if(ppy+260>window.innerHeight-8)ppy=window.innerHeight-270;
@@ -447,44 +463,11 @@ function animate(){
   renderer.render(scene,cam);
 }
 
-function buildColors(){
-  const el=document.getElementById('colorRow');el.innerHTML='';
-  COLORS.forEach((col,i)=>{
-    const d=document.createElement('div');d.className='cdot'+(i===0?' on':'');
-    d.style.background=col.hex;d.title=col.lb;
-    d.onclick=()=>{S.col=col;el.querySelectorAll('.cdot').forEach(x=>x.classList.remove('on'));d.classList.add('on');applyColors();updSum();};
-    el.appendChild(d);
-  });
-}
-function buildLaces(){
-  const el=document.getElementById('laceRow');el.innerHTML='';
-  LACES.forEach((lc,i)=>{
-    const w=document.createElement('div');w.className='ldw'+(i===0?' on':'');
-    const d=document.createElement('div');d.className='ld';d.style.background=lc.hex;
-    const l=document.createElement('div');l.className='ll';l.textContent=lc.lb;
-    w.appendChild(d);w.appendChild(l);
-    w.onclick=()=>{S.lc=lc;el.querySelectorAll('.ldw').forEach(x=>x.classList.remove('on'));w.classList.add('on');applyColors();updSum();};
-    el.appendChild(w);
-  });
-}
-function buildSoles(){
-  const el=document.getElementById('soleGrid');el.innerHTML='';
-  SOLES.forEach((sl,i)=>{
-    const c=document.createElement('button');c.className='sole-c'+(i===0?' on':'');
-    c.innerHTML=`<div class="sole-icon">${sl.ic}</div><span class="sole-nm">${sl.nm}</span><span class="sole-ds">${sl.ds}</span>${sl.ex?`<div class="sole-ex">+${sl.ex} RON</div>`:''}`;
-    c.onclick=()=>{S.sl=sl;el.querySelectorAll('.sole-c').forEach(x=>x.classList.remove('on'));c.classList.add('on');applyColors();updSum();};
-    el.appendChild(c);
-  });
-}
-function buildSizes(){
-  const el=document.getElementById('sizeGrid');el.innerHTML='';
-  SIZES.forEach(sz=>{
-    const b=document.createElement('button');b.className='sz'+(NA.includes(sz)?' na':'');
-    b.textContent=sz;
-    if(!NA.includes(sz))b.onclick=()=>{S.sz=sz;el.querySelectorAll('.sz').forEach(x=>x.classList.remove('on'));b.classList.add('on');updSum();};
-    el.appendChild(b);
-  });
-}
+// Side panel
+function buildColors(){const el=document.getElementById('colorRow');el.innerHTML='';COLORS.forEach((col,i)=>{const d=document.createElement('div');d.className='cdot'+(i===0?' on':'');d.style.background=col.hex;d.title=col.lb;d.onclick=()=>{S.col=col;el.querySelectorAll('.cdot').forEach(x=>x.classList.remove('on'));d.classList.add('on');applyColors();updSum();};el.appendChild(d);});}
+function buildLaces(){const el=document.getElementById('laceRow');el.innerHTML='';LACES.forEach((lc,i)=>{const w=document.createElement('div');w.className='ldw'+(i===0?' on':'');const d=document.createElement('div');d.className='ld';d.style.background=lc.hex;const l=document.createElement('div');l.className='ll';l.textContent=lc.lb;w.appendChild(d);w.appendChild(l);w.onclick=()=>{S.lc=lc;el.querySelectorAll('.ldw').forEach(x=>x.classList.remove('on'));w.classList.add('on');applyColors();updSum();};el.appendChild(w);});}
+function buildSoles(){const el=document.getElementById('soleGrid');el.innerHTML='';SOLES.forEach((sl,i)=>{const c=document.createElement('button');c.className='sole-c'+(i===0?' on':'');c.innerHTML=`<div class="sole-icon">${sl.ic}</div><span class="sole-nm">${sl.nm}</span><span class="sole-ds">${sl.ds}</span>${sl.ex?`<div class="sole-ex">+${sl.ex} RON</div>`:''}`;c.onclick=()=>{S.sl=sl;el.querySelectorAll('.sole-c').forEach(x=>x.classList.remove('on'));c.classList.add('on');applyColors();updSum();};el.appendChild(c);});}
+function buildSizes(){const el=document.getElementById('sizeGrid');el.innerHTML='';SIZES.forEach(sz=>{const b=document.createElement('button');b.className='sz'+(NA.includes(sz)?' na':'');b.textContent=sz;if(!NA.includes(sz))b.onclick=()=>{S.sz=sz;el.querySelectorAll('.sz').forEach(x=>x.classList.remove('on'));b.classList.add('on');updSum();};el.appendChild(b);});}
 
 function syncPanel(){
   document.querySelectorAll('.cdot').forEach((d,i)=>{d.classList.toggle('on',COLORS[i].id===S.col.id);});
