@@ -36,6 +36,28 @@ const MODELS = [
   },
 
   // --- Adaugă modele noi mai jos, după același format ---
+  //      {
+    id: 'test_cube',
+    name: 'Test Cub',
+    subtitle: 'Model de test',
+    price: 0,
+    glb: 'test_cube.glb',
+    img: '',
+    colors: [
+      {id:'natural', hex:'#C4A882', lb:'Natural'},
+      {id:'black',   hex:'#111111', lb:'Negru'},
+    ],
+    laces: [
+      {id:'white', hex:'#F0EBE0', lb:'Alb'},
+      {id:'black', hex:'#111111', lb:'Negru'},
+    ],
+    soles: [
+      {id:'white', nm:'Alba',   ds:'Sport',   ic:'⬜', hex:'#E8E4DC', ex:0},
+      {id:'black', nm:'Neagra', ds:'Elegant', ic:'⬛', hex:'#1A1A1A', ex:0},
+    ],
+    sizes: [39,40,41,42,43,44,45],
+    sizesNA: [],
+  },
   // {
   //   id: 'loafer1',
   //   name: 'Model Loafer',
