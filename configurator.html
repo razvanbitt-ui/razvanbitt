@@ -334,7 +334,7 @@ function loadShoe(){
         const ls=document.getElementById('loadingScreen');
         ls.style.transition='opacity .5s';ls.style.opacity='0';
         setTimeout(()=>ls.style.display='none',500);
-      },err=>{document.getElementById('ldTxt').textContent='Eroare: '+err.message;});
+      },err=>{document.getElementById('ldTxt').textContent='Eroare: '+JSON.stringify(err);});
     })
     .catch(err=>{document.getElementById('ldTxt').textContent='Eroare: '+err.message;});
 }
