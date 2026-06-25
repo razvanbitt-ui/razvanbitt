@@ -250,7 +250,7 @@ function classifyMesh(name){
 function loadShoe(){
   const loader = new THREE.GLTFLoader();
   const dracoLoader = new THREE.DRACOLoader();
-  dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/');
+  dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
   loader.setDRACOLoader(dracoLoader);
 
   document.getElementById('ldTxt').textContent = 'Se încarcă modelul...';
