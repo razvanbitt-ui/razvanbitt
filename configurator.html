@@ -285,6 +285,20 @@ function loadShoe(){
   const dracoLoader=new THREE.DRACOLoader();
   dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
   loader.setDRACOLoader(dracoLoader);
+  // Patch pentru extensii nesupportate (KHR_materials_clearcoat etc)
+  const _origParse = loader.parse.bind(loader);
+  loader.parse = function(data, path, onLoad, onError) {
+    try {
+      const json = JSON.parse(new TextDecoder().decode(data instanceof ArrayBuffer ? data.slice(12, 12 + new DataView(data).getUint32(12, true)) : data));
+      if(json.extensionsRequired) {
+        json.extensionsRequired = json.extensionsRequired.filter(e => e === 'KHR_draco_mesh_compression');
+      }
+      if(json.extensionsUsed) {
+        json.extensionsUsed = json.extensionsUsed.filter(e => ['KHR_draco_mesh_compression','KHR_materials_unlit'].includes(e));
+      }
+    } catch(e) {}
+    _origParse(data, path, onLoad, onError);
+  };
   document.getElementById('ldTxt').textContent='Se încarcă modelul...';
   document.getElementById('ldBar').style.width='10%';
   fetch(MODEL.glb)
